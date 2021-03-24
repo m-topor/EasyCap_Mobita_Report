@@ -8,7 +8,7 @@ output: word_document
 
 ```{r WD, eval=TRUE, echo=FALSE, message=FALSE}
 # Set-up the workspace and load the data
-setwd("~/All working docs/PhD/Tech Report")
+setwd("~/All working docs/PhD/Tech Report/EasyCap_Mobita_Report")
 library(tidyverse)
 library(yarrr)
 
@@ -188,7 +188,7 @@ V = 30, p = 1.0
   
 **Raw Freq Plot Log-Transformed 0-60Hz**  
   
-![Raw_Freq](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\fig1_raw_freq.jpg)  
+![Raw_Freq](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\EasyCap_Mobita_Report\fig1_raw_freq.jpg)  
   
   
 # 
@@ -641,7 +641,7 @@ V = 34, p = 1.0
 
 **Raw Freq Plot Log-Transformed 0-60Hz**  
   
-![Range_Freq](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\fig2_range_freq.jpg)  
+![Range_Freq](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\EasyCap_Mobita_Report\fig2_range_freq.jpg)  
 
 # 
 # Comparison of frequency activity between the two systems 
@@ -1166,15 +1166,16 @@ P-value with Bonferroni Correction = 0.078128
 
 ## **Correlation plots with topographies**  
 
-![Plots](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\corr_plots_v2.jpg)
+![Plots](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\EasyCap_Mobita_Report\corr_plots_v2.jpg)
 ## **All frequencies pirate plots**  
   
-![Plots](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\fig3_freq_pirates.jpg)
+![Plots](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\EasyCap_Mobita_Report\fig3_freq_pirates.jpg)
 
 # 
 # Comparison of Event-Related Potentials between the two systems 
 
-## **P300**
+## **P300**  
+**Mean Amplitude**
 
 -  Median for Easy Cap  
 -  Median for Mobita  
@@ -1246,14 +1247,138 @@ axis(2, at = seq(-1, 5, by = 1)) #set the numbers on the y axis
 
 From the correlation plot, it looks like there is a relationship between EasyCap and Mobita P300 mean amplitude, however, the correlation test shows that this is not significant.  
 P value with Bonferroni Correction = 1  
-(p value times by 4 as there are 2 types of ERPs with 2 tests used for each)    
+(p value times by 8 as there are 2 types of ERPs with 4 tests used for each)    
   
 From the Wilcoxon test, it seems as though there are no significant differences between the mean amplitudes. The pirate plot also shows that variance/distribution is not too different.  
 P value with Bonferroni Correction = 1  
-(p value multiplied by 4)  
+(p value multiplied by 8)  
+
 
   
-## **ERN**
+**Latency**  
+
+-  Median for Easy Cap  
+-  Median for Mobita  
+-  Wilcoxon test results  
+-  Pirate Plot  
+
+```{r P300 latency, eval=TRUE, echo=FALSE,  warning=FALSE}
+#the peaks a re extracted from the difference wave already
+df_P300_peak <- read.csv('P300_peak.csv')
+
+
+#Median for the peak latency EasyCap
+median(df_P300_peak$Time_E)
+#Median for the peak latency Mobita
+median(df_P300_peak$Time_M)
+
+#Wilcoxon test
+wilcox.test(df_P300_peak$Time_E, df_P300_peak$Time_M, paired=TRUE)  
+
+P300_peak <- df_P300_peak$Time_E
+P300_peak[11:20] <- df_P300_peak$Time_M 
+group <- 1:20
+group[1:10] <- 1
+group[11:20] <- 2
+df_P300_peak_plot <- as.data.frame(cbind(P300_peak, group))
+df_P300_peak_plot$group <- as.factor(df_P300_peak_plot$group)
+
+pirateplot(formula = P300_peak~group, #which variables are you using
+           data = df_P300_peak_plot,
+           theme = 0, 
+           main = "P300 Peak Latency Per System", #title of the graph
+           par(cex.main = 1.2), #set the size of your title
+           xlab="EEG System", #label of the x axis
+           ylab="P300 Peak Time in ms", #label of the y axis
+           cex.lab = 1.2, #size of the axis labels
+           pal = "basel", 
+           inf.method = 'iqr', # IQR box
+           avg.line.fun = median,
+           bean.f.o = 0.5, # Bean fill darkness
+           point.o = .3, # points darkness
+           inf.f.o = .5, # Inference fill
+           inf.b.o = .5, # Inference border
+           avg.line.o = 0.7, # Average line darkness
+           inf.f.col = "white", # Inf fill col
+           inf.b.col = "black", # Inf border col
+           avg.line.col = "black", # avg line col
+           point.pch = 20, #point shape
+           point.col = "black", #point colour
+           point.cex = 1, #point size
+           gl.col = "#FFCCFF", #gridlines and colour
+           yaxt ="n", # remove the automatic scale on the axis Y
+           quant = c(.05, .95) #set the quantile, here within 5% on each side to indicate outliers
+           )
+#here are some additional commands that add onto the plot
+axis(2, at = seq(266, 379, by = 10)) #set the numbers on the y axis
+
+```  
+
+**Amplitude**  
+```{r P300 amplitude, eval=TRUE, echo=FALSE,  warning=FALSE}
+#the peaks a re extracted from the difference wave already
+df_P300_peak <- read.csv('P300_peak.csv')
+
+
+#Median for the peak latency EasyCap
+median(df_P300_peak$Amp_E)
+#Median for the peak latency Mobita
+median(df_P300_peak$Amp_M)
+
+#Wilcoxon test
+wilcox.test(df_P300_peak$Amp_E, df_P300_peak$Amp_M, paired=TRUE)  
+
+
+P300_peak_amp <- df_P300_peak$Amp_E
+P300_peak_amp[11:20] <- df_P300_peak$Amp_M 
+group <- 1:20
+group[1:10] <- 1
+group[11:20] <- 2
+df_P300_peak_amp_plot <- as.data.frame(cbind(P300_peak_amp, group))
+df_P300_peak_amp_plot$group <- as.factor(df_P300_peak_amp_plot$group)
+
+pirateplot(formula = P300_peak_amp~group, #which variables are you using
+           data = df_P300_peak_amp_plot,
+           theme = 0, 
+           main = "P300 Peak Amplitude Per System", #title of the graph
+           par(cex.main = 1.2), #set the size of your title
+           xlab="EEG System", #label of the x axis
+           ylab="P300 Peak Amplitude in micro Volts", #label of the y axis
+           cex.lab = 1.2, #size of the axis labels
+           pal = "basel", 
+           inf.method = 'iqr', # IQR box
+           avg.line.fun = median,
+           bean.f.o = 0.5, # Bean fill darkness
+           point.o = .3, # points darkness
+           inf.f.o = .5, # Inference fill
+           inf.b.o = .5, # Inference border
+           avg.line.o = 0.7, # Average line darkness
+           inf.f.col = "white", # Inf fill col
+           inf.b.col = "black", # Inf border col
+           avg.line.col = "black", # avg line col
+           point.pch = 20, #point shape
+           point.col = "black", #point colour
+           point.cex = 1, #point size
+           gl.col = "#FFCCFF", #gridlines and colour
+           yaxt ="n", # remove the automatic scale on the axis Y
+           quant = c(.05, .95) #set the quantile, here within 5% on each side to indicate outliers
+           )
+#here are some additional commands that add onto the plot
+axis(2, at = seq(-3, 8, by = 3)) #set the numbers on the y axis
+
+```  
+ 
+  
+EasyCap and Mobita have similar peak latency and amplitudes, both in terms of central dentency but also distribution.  
+Bonferroni corrected p-value for Latency = 1  
+Bonferroni corrected p-value for Latency = 1  
+
+
+
+  
+## **ERN**  
+  
+**Mean Amplitude** 
 
 -  Median for Easy Cap  
 -  Median for Mobita  
@@ -1294,9 +1419,9 @@ wilcox.test(df_ERN$dif_E, df_ERN$dif_M, paired=TRUE)
 
 ERN <- df_ERN$dif_E
 ERN[10:18] <- df_ERN$dif_M 
-group <- 1:20
-group[1:10] <- 1
-group[11:20] <- 2
+group <- 1:18
+group[1:9] <- 1
+group[10:18] <- 2
 df_ERN_plot <- as.data.frame(cbind(ERN, group))
 df_ERN_plot$group <- as.factor(df_ERN_plot$group)
 
@@ -1331,19 +1456,16 @@ axis(2, at = seq(-1.5, 6.5, by = 1)) #set the numbers on the y axis
 
 ```
 
-From the correlation plot, it looks like there is a relationship between EasyCap and Mobita P300 mean amplitude, however, the correlation test shows that this is not significant.  
+From the correlation plot, it looks like there is a relationship between EasyCap and Mobita ERN mean amplitude, however, the correlation test shows that this is not significant.  
 P value with Bonferroni Correction = 1  
-(p value times by 4 as there are 2 types of ERPs with 2 tests used for each)    
+(p value multiplied by 8 as there are 2 types of ERPs with 4 tests used for each)    
   
-From the Wilcoxon test, it seems as though ERN is much more positive in the case of Mobita compared with EasyCap and this difference is significant. This is probably caused by the latency shift for these response-locked epochs.  
-P value with Bonferroni Correction = 0.031248  
+From the Wilcoxon test, it seems as though ERN is much more positive in the case of Mobita compared with EasyCap but this difference is non-significant following Bonferroni correction. This is probably caused by the latency shift for these response-locked epochs.  
+P value with Bonferroni Correction = 0.062496    
 (p value multiplied by 4)  
   
   
-  
-## **ERN Peak Check**   
-  
-**Latency**  
+**Peak Latency**  
 
 -  Median for Easy Cap  
 -  Median for Mobita  
@@ -1365,9 +1487,9 @@ wilcox.test(df_ERN_peak$Time_E, df_ERN_peak$Time_M, paired=TRUE)
 
 ERN_peak <- df_ERN_peak$Time_E
 ERN_peak[10:18] <- df_ERN_peak$Time_M 
-group <- 1:20
-group[1:10] <- 1
-group[11:20] <- 2
+group <- 1:18
+group[1:9] <- 1
+group[10:18] <- 2
 df_ERN_peak_plot <- as.data.frame(cbind(ERN_peak, group))
 df_ERN_peak_plot$group <- as.factor(df_ERN_peak_plot$group)
 
@@ -1401,7 +1523,13 @@ pirateplot(formula = ERN_peak~group, #which variables are you using
 axis(2, at = seq(-26, 71, by = 10)) #set the numbers on the y axis
 
 ```  
-**Amplitude**  
+  
+From the pirate plot, it is clear that the ERN peak can be observed much earlier in Mobita compared to EasyCap even before the supposed onset of response as indicated by the digital marker. The Wilcoxon test is however non-significant.  
+Bonferroni corrected p-value = 0.11416
+(multiplied by 8)
+
+
+**Peak Amplitude**  
 ```{r ERN amplitude, eval=TRUE, echo=FALSE,  warning=FALSE}
 #the peaks a re extracted from the difference wave already
 df_ERN_peak <- read.csv('ERN_peak.csv')
@@ -1418,9 +1546,9 @@ wilcox.test(df_ERN_peak$Amp_E, df_ERN_peak$Amp_M, paired=TRUE)
 
 ERN_peak_amp <- df_ERN_peak$Amp_E
 ERN_peak_amp[10:18] <- df_ERN_peak$Amp_M 
-group <- 1:20
-group[1:10] <- 1
-group[11:20] <- 2
+group <- 1:18
+group[1:9] <- 1
+group[9:18] <- 2
 df_ERN_peak_amp_plot <- as.data.frame(cbind(ERN_peak_amp, group))
 df_ERN_peak_amp_plot$group <- as.factor(df_ERN_peak_amp_plot$group)
 
@@ -1455,10 +1583,90 @@ axis(2, at = seq(-16, 3, by = 3)) #set the numbers on the y axis
 
 ```  
  
-  
+Wilcoxon p-value with Bonferroni correction = 1
+
 From looking at peak latency data and Wilcoxon results, it is clear that Mobita peaks are delayed in time and occur significantly earlier than EasyCap peaks. This would explain why there is a difference in ERN mean amplitude observed in the previous analysis. In fact, going further as to check the median and distribution of peak amplitude, the results look very similar between the two systems.  
+    
   
   
-The difference disappears once the mean ampliude window is moved back?
-There is no peak latency shift for P300? This is response specific?
+# 
+# Exploratory analysis - ERN shifted  
+  
+Is it the case that the difference disappears once the mean amplitude window is moved back?  
+  
+```{r ERN shift, eval=TRUE, echo=FALSE,  warning=FALSE}
+
+df_ERN_shift <- read.csv('ERN_M_shift.csv')  
+#fetch the EasyCap data that was already used earlier 
+df_ERN_easycap <- read.csv('ERN.csv')
+df_ERN_easycap <- df_ERN_easycap[,c(2:3,5)]  
+
+#merge these data frames
+df_ERN_shift <- merge(df_ERN_shift, df_ERN_easycap, by="Mobita")
+
+#remove participant 9 as they only had 5 trials available for comparison 9it was 4 before but the merge() function reaordered it)
+df_ERN_shift <- df_ERN_shift[-9,]
+
+#create difference waves 
+# EasyCap
+df_ERN_shift <- mutate(df_ERN_shift, dif_E = Err_Cz_E - Corr_Cz_E)
+#Mobita
+df_ERN_shift <- mutate(df_ERN_shift, dif_M = Err_Cz_M_shift - Corr_Cz_M_shift)
+
+#Median for the difference wave EasyCap
+median(df_ERN_shift$dif_E)
+#Median for the difference wave Mobita
+median(df_ERN_shift$dif_M)
+
+
+#Wilcoxon test
+wilcox.test(df_ERN_shift$dif_E, df_ERN_shift$dif_M, paired=TRUE)  
+
+ERN_shift <- df_ERN_shift$dif_E
+ERN_shift[10:18] <- df_ERN_shift$dif_M 
+group <- 1:20
+group[1:10] <- 1
+group[11:20] <- 2
+df_ERN_shift_plot <- as.data.frame(cbind(ERN_shift, group))
+df_ERN_shift_plot$group <- as.factor(df_ERN_shift_plot$group)
+
+pirateplot(formula = ERN_shift~group, #which variables are you using
+           data = df_ERN_shift_plot,
+           theme = 0, 
+           main = "ERN Mean Amplitude Per System (shifted)", #title of the graph
+           par(cex.main = 1.2), #set the size of your title
+           xlab="EEG System", #label of the x axis
+           ylab="ERN Mean Amplitude in Micro Volts", #label of the y axis
+           cex.lab = 1.2, #size of the axis labels
+           pal = "basel", 
+           inf.method = 'iqr', # IQR box
+           avg.line.fun = median,
+           bean.f.o = 0.5, # Bean fill darkness
+           point.o = .3, # points darkness
+           inf.f.o = .5, # Inference fill
+           inf.b.o = .5, # Inference border
+           avg.line.o = 0.7, # Average line darkness
+           inf.f.col = "white", # Inf fill col
+           inf.b.col = "black", # Inf border col
+           avg.line.col = "black", # avg line col
+           point.pch = 20, #point shape
+           point.col = "black", #point colour
+           point.cex = 1, #point size
+           gl.col = "#FFCCFF", #gridlines and colour
+           yaxt ="n", # remove the automatic scale on the axis Y
+           quant = c(.05, .95) #set the quantile, here within 5% on each side to indicate outliers
+           )
+#here are some additional commands that add onto the plot
+axis(2, at = seq(-12, 5, by = 4)) #set the numbers on the y axis
+
+```
+  
+The differences in distribution disappear and the test can no longer provide evidence that there is a difference between the mean ERN amplitudes of both systems.
+  
+  
+**ERN Plots**  
+  
+![Plots](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\EasyCap_Mobita_Report\ERN.jpg)
+
+
 
