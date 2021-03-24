@@ -1373,7 +1373,8 @@ EasyCap and Mobita have similar peak latency and amplitudes, both in terms of ce
 Bonferroni corrected p-value for Latency = 1  
 Bonferroni corrected p-value for Latency = 1  
 
-
+**P300 Plots**  
+![Plots](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\EasyCap_Mobita_Report\P300.jpg)
 
   
 ## **ERN**  
