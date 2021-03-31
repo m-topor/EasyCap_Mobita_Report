@@ -1524,8 +1524,18 @@ Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for eac
   
 
 **P300 Plots**  
-![Plots](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\EasyCap_Mobita_Report\P300.jpg)
+![Plots](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\EasyCap_Mobita_Report\P300.jpg)  
+  
+## **Investigating why the P300 is shifed frontally**    
+  
+**EasyCap and Mobita P300 activity at Fz and Pz**  
+EasyCap is in black and Mobita is in red.  
 
+![P300 waves](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\EasyCap_Mobita_Report\P300_fz_pz.jpg)  
+  
+Here the activity looks stronger for Fz in Mobita in comparison to Fz in EasyCap and in comparison to Mobita activity at Pz.  
+  
+I have checked referencing and it seems that the references are the same. The only difference is that in EasyCap, the mastoid electrodes that were implicitly recorded are included in the mean whereas in Mobita I did not include the masoid electodes for the mean calculation (as I thought they would not be included in EasyCap).
   
 ## **ERN**  
   
