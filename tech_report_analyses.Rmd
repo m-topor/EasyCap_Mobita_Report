@@ -1535,7 +1535,142 @@ EasyCap is in black and Mobita is in red.
   
 Here the activity looks stronger for Fz in Mobita in comparison to Fz in EasyCap and in comparison to Mobita activity at Pz.  
   
-I have checked referencing and it seems that the references are the same. The only difference is that in EasyCap, the mastoid electrodes that were implicitly recorded are included in the mean whereas in Mobita I did not include the masoid electodes for the mean calculation (as I thought they would not be included in EasyCap).
+I have checked referencing and it seems that the references are the same. The only difference is that in EasyCap, the mastoid electrodes that were implicitly recorded are included in the mean whereas in Mobita I did not include the masoid electodes for the mean calculation (as I thought they would not be included in EasyCap).  
+  
+**SNR distribution across different areas of electrodes**  
+#The electrodes will be divided into 3 areas and the mean SNR values for those areas will be compared using the Wilcoxon and Fligner-Killeen tests.  
+  
+Frontal: Fp1, F2p, F7, F3, Fz, F4, F8,   
+Central: FC5, FC1, FC2, FC6, C3, Cz, C4, CP5, CP1, CP2, CP6  
+Posterior: P7, P3, Pz, P4, P8, O1, O2 
+  
+```{r SNR distribution, eval=TRUE, echo=FALSE,  warning=FALSE, message=FALSE}
+
+#Make a new data frame where SNR data from EasyCap and Mobita will be combined. The name of the columns has to be the same so rename these first.
+
+df_SNR_all <- df_SNR_E
+colnames(df_SNR_all) <- c('Fp1', 'Fp2', 'F7', 'F3', 'Fz', 'F4', 'F8', 'FC5', 'FC1', 'FC2', 'FC6', 'T7', 'C3', 'Cz', 'C4', 'T8', 'CP5', 'CP1', 'CP2', 'CP6', 'P7', 'P3', 'Pz', 'P4', 'P8', 'O1', 'O2') 
+
+df_SNR_M_renamed <- df_SNR_M
+colnames(df_SNR_M_renamed) <- c('Fp1', 'Fp2', 'F7', 'F3', 'Fz', 'F4', 'F8', 'FC5', 'FC1', 'FC2', 'FC6', 'T7', 'C3', 'Cz', 'C4', 'T8', 'CP5', 'CP1', 'CP2', 'CP6', 'P7', 'P3', 'Pz', 'P4', 'P8', 'O1', 'O2')
+
+#Merge EasyCap and Mobita data into one data frame
+df_SNR_all <- bind_rows(df_SNR_all, df_SNR_M_renamed)
+
+# Make a new data frame for frontal electrodes and calculate the means
+df_SNR_frontal <-  df_SNR_all[,c('Fp1', 'Fp2', 'F7', 'F3', 'Fz', 'F4', 'F8')]
+df_SNR_frontal <- as.data.frame(lapply(df_SNR_frontal, as.numeric))
+df_SNR_frontal$mean_frontal <- rowMeans(df_SNR_frontal)
+
+# Make a new data frame for central electrodes and calculate the means
+df_SNR_central <- df_SNR_all[,c('FC5','FC1', 'FC2', 'FC6','C3', 'Cz', 'C4','CP5', 'CP1', 'CP2', 'CP6')]
+df_SNR_central <- as.data.frame(lapply(df_SNR_central, as.numeric))
+df_SNR_central$mean_central <- rowMeans(df_SNR_central)
+
+# Make a new data frame for posterior electrodes and calculate the means
+df_SNR_posterior <- df_SNR_all[,c('P7', 'P3', 'Pz', 'P4', 'P8', 'O1', 'O2')]
+df_SNR_posterior <- as.data.frame(lapply(df_SNR_posterior, as.numeric))
+df_SNR_posterior$mean_posterior <- rowMeans(df_SNR_posterior)
+
+#Add the means back to the main data frame
+df_SNR_all$mean_frontal <- df_SNR_frontal$mean_frontal
+df_SNR_all$mean_central <- df_SNR_central$mean_central
+df_SNR_all$mean_posterior <- df_SNR_posterior$mean_posterior
+
+#Prepare a new data frame with a layout suitable for plotting
+SNR_areas <- 1:20
+SNR_areas[1:20] <- df_SNR_frontal$mean_frontal
+SNR_areas[21:40] <- df_SNR_central$mean_central
+SNR_areas[41:60] <- df_SNR_posterior$mean_posterior
+
+area <- rep("Frontal", 20)
+area[21:40] <- rep("Central",20)
+area[41:60] <- rep("Posterior",20)  
+  
+group_SNR <- rep(1, 10)
+group_SNR[11:20] <- rep(2, 10)
+group_SNR[21:30] <- rep(1, 10)
+group_SNR[31:40] <- rep(2, 10)
+group_SNR[41:50] <- rep(1, 10)
+group_SNR[51:60] <- rep(2, 10)
+
+df_SNR_areas <- as.data.frame(cbind(SNR_areas, area, group_SNR))
+df_SNR_areas$SNR_areas <- as.numeric((df_SNR_areas$SNR_areas))
+
+ 
+
+pirateplot(formula = SNR_areas ~ area + group_SNR, #which variables are you using
+           data = df_SNR_areas,
+           theme = 0, 
+           main = "SNR per area per system", #title of the graph
+           par(cex.main = 1.2), #set the size of your title
+           xlab="EEG System", #label of the x axis
+           ylab="SNR values", #label of the y axis
+           cex.lab = 1.2, #size of the axis labels
+           pal = "basel", 
+           inf.method = 'iqr', # IQR box
+           avg.line.fun = median,
+           bean.f.o = 0.5, # Bean fill darkness
+           point.o = .3, # points darkness
+           inf.f.o = .5, # Inference fill
+           inf.b.o = .5, # Inference border
+           avg.line.o = 0.7, # Average line darkness
+           inf.f.col = "white", # Inf fill col
+           inf.b.col = "black", # Inf border col
+           avg.line.col = "black", # avg line col
+           point.pch = 20, #point shape
+           point.col = "black", #point colour
+           point.cex = 1, #point size
+           gl.col = "#FFCCFF", #gridlines and colour
+           yaxt ="n", # remove the automatic scale on the axis Y
+           quant = c(.05, .95) #set the quantile, here within 5% on each side to indicate outliers
+           )
+#here are some additional commands that add onto the plot
+axis(2, at = seq(0.007, 0.190 , by = 0.015)) #set the numbers on the y axis
+
+# Create vectors for the wilcoxon test
+SNR_frontal_e <- df_SNR_all$mean_frontal[1:10]
+SNR_frontal_m <- df_SNR_all$mean_frontal[11:20]
+
+SNR_central_e <- df_SNR_all$mean_central[1:10]
+SNR_central_m <- df_SNR_all$mean_central[11:20]
+
+SNR_posterior_e <- df_SNR_all$mean_posterior[1:10]
+SNR_posterior_m <- df_SNR_all$mean_posterior[11:20]
+
+# Run the Wilcoxon tests
+SNR_frontal_wil <- wilcox.test(SNR_frontal_e, SNR_frontal_m, paired=TRUE)  
+SNR_central_wil <- wilcox.test(SNR_central_e, SNR_central_m, paired=TRUE) 
+SNR_posterior_wil <- wilcox.test(SNR_posterior_e, SNR_posterior_m, paired=TRUE)
+
+
+#Prepare data for the Fligner tests  
+df_SNR_frontal$group <- group
+df_SNR_central$group <- group
+df_SNR_posterior$group <- group
+#Run the Fligner-Killeen tests
+SNR_frontal_flig <- fligner.test(mean_frontal ~ group, data = df_SNR_frontal)
+SNR_central_flig <- fligner.test(mean_central ~ group, data = df_SNR_central)
+SNR_posterior_flig <- fligner.test(mean_posterior ~ group, data = df_SNR_posterior)
+```
+
+The results from Wilcoxon test are significant for the posterior electrodes. All other tests are non-significant.  
+Because there are 4 other tests looking at noise in the data, p-value will be multiplied by 10.  
+Bonferroni correction x10.  
+  
+**Frontal electrodes**  
+Wilcoxon: `r SNR_frontal_wil$statistic`, p-value = `r SNR_frontal_wil$p.value`, Bonferroni p-value: `r SNR_frontal_wil$p.value*10`  
+Fligner-Killeen: `r SNR_frontal_flig$statistic`, p-value = `r SNR_frontal_flig$p.value`, Bonferroni p-value: `r SNR_frontal_flig$p.value*10`  
+  
+**Central electrodes**  
+Wilcoxon: `r SNR_central_wil$statistic`, p-value = `r SNR_central_wil$p.value`, Bonferroni p-value: `r SNR_central_wil$p.value*10`  
+Fligner-Killeen: `r SNR_central_flig$statistic`, p-value = `r SNR_central_flig$p.value`, Bonferroni p-value: `r SNR_central_flig$p.value*10`  
+
+**Posterior electrodes**  
+Wilcoxon: `r SNR_posterior_wil$statistic`, p-value = `r SNR_posterior_wil$p.value`, Bonferroni p-value: `r SNR_posterior_wil$p.value*10`  
+Fligner-Killeen: `r SNR_posterior_flig$statistic`, p-value = `r SNR_posterior_flig$p.value`, Bonferroni p-value: `r SNR_posterior_flig$p.value*10`  
+  
+  
   
 ## **ERN**  
   
