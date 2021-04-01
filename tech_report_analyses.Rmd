@@ -781,6 +781,7 @@ theta_median_e <- median(df_theta_matched$theta_av_E_log)
 theta_median_m <- median(df_theta_matched$theta_av_M_log)
 
 theta_cor <- cor.test(df_theta_matched$theta_av_E_log, df_theta_matched$theta_av_M_log, method="spearman")  
+#theta_cor <- cor.test(df_theta_matched$theta_av_E_log, df_theta_matched$theta_av_M_log, method="kendall") 
   
 ggplot(df_theta_matched, aes(x=theta_av_E_log, y=theta_av_M_log))+ 
   geom_point()+
@@ -921,6 +922,7 @@ alpha_median_e <- median(df_alpha_matched$alpha_av_E_log)
 alpha_median_m <- median(df_alpha_matched$alpha_av_M_log)
 
 alpha_cor <- cor.test(df_alpha_matched$alpha_av_E_log, df_alpha_matched$alpha_av_M_log, method="spearman")
+#alpha_cor <- cor.test(df_alpha_matched$alpha_av_E_log, df_alpha_matched$alpha_av_M_log, method="kendall")
 
 ggplot(df_alpha_matched, aes(x=alpha_av_E_log, y=alpha_av_M_log))+ 
   geom_point()+
@@ -1061,6 +1063,7 @@ lbeta_median_e <- median(df_lbeta_matched$lbeta_av_E_log)
 lbeta_median_m <- median(df_lbeta_matched$lbeta_av_M_log)
 
 lbeta_cor <- cor.test(df_lbeta_matched$lbeta_av_E_log, df_lbeta_matched$lbeta_av_M_log, method="spearman")
+#lbeta_cor <- cor.test(df_lbeta_matched$lbeta_av_E_log, df_lbeta_matched$lbeta_av_M_log, method="kendall")
 
 ggplot(df_lbeta_matched, aes(x=lbeta_av_E_log, y=lbeta_av_M_log))+ 
   geom_point()+
@@ -1199,6 +1202,7 @@ hbeta_median_e <- median(df_hbeta_matched$hbeta_av_E_log)
 hbeta_median_m <- median(df_hbeta_matched$hbeta_av_M_log)
 
 hbeta_cor <- cor.test(df_hbeta_matched$hbeta_av_E_log, df_hbeta_matched$hbeta_av_M_log, method="spearman")
+#hbeta_cor <- cor.test(df_hbeta_matched$hbeta_av_E_log, df_hbeta_matched$hbeta_av_M_log, method="kendall")
 
 ggplot(df_hbeta_matched, aes(x=hbeta_av_E_log, y=hbeta_av_M_log))+ 
   geom_point()+
