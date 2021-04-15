@@ -1,8 +1,10 @@
 ---
 title: "Technical Report Analyses"
 author: "Marta Topor"
-date: "11/04/2021"
+date: "15/04/2021"
 output: word_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -13,6 +15,7 @@ library(tidyverse)
 library(yarrr)
 library(rstatix)
 library(coin)
+library(wmwpow)
 
 ```
 
@@ -26,8 +29,9 @@ The first part of analysis assesses the noise in the data before any preprocessi
 ## **0.1-2Hz**    
 
 ```{r low freq, eval=TRUE, echo=FALSE}
-
+#import data
 df_raw_low <- read.csv("raw_2Hz_all.csv")
+#remove participant info
 df_raw_low <- df_raw_low[,-c(1,2)]
 
 #import Theta frequency data
@@ -59,28 +63,23 @@ df_means_low$group <- as.factor(df_means_low$group)
 - Wilcoxon test result 
 - Fligner-Killeen test for homogeneity of variance 
   
-```{r low freq results, eval=TRUE, echo=FALSE, message=FALSE, message=FALSE}  
+```{r low freq results, eval=TRUE, echo=FALSE, message=FALSE, message=FALSE} 
+#calculate medians and IQRs
 raw_low_median_e <- median(E_chans_low_log$mean_E)
 raw_low_iqr_e <- IQR(E_chans_low_log$mean_E)
 
 raw_low_median_m <- median(M_chans_low_log$mean_M)
 raw_low_iqr_m <- IQR(M_chans_low_log$mean_M)
 
-#Test of mean differences
+#Test of central tendency differences
 raw_low_wil <- wilcox.test(E_chans_low_log$mean_E, M_chans_low_log$mean_M,paired=TRUE)
-
+#Wilcoxon effect size using the plot data structure
 raw_low_es <- wilcox_effsize(df_means_low, all_chans_low ~ group, paired=TRUE)
 
 #Test of homogeneity of variances
 raw_low_flig <- fligner.test(all_chans_low ~ group, data = df_means_low)
 
-#ggplot(df_means_low, aes(x=group, y=all_chans_low, fill=group)) +
- # geom_violin(trim = FALSE)+
-  #geom_boxplot(width=0.1)+ #this is for median and IQR
-  #geom_jitter(shape=16, position=position_jitter(0.2))+
-  #theme_classic()
-
-
+#Individual differences plot
 pirateplot(formula = all_chans_low~group, #which variables are you using
            data = df_means_low,
            theme = 0, 
@@ -160,7 +159,7 @@ df_means_high$group <- as.factor(df_means_high$group)
   
 **Descriptive statistics, Wilcoxon test and plot:**  
   
-- Piate Plot with IQR and median 
+- Pirate Plot with IQR and median 
 - Median for EasyCap 
 - Median for Mobita 
 - Wilcoxon test result 
@@ -168,15 +167,16 @@ df_means_high$group <- as.factor(df_means_high$group)
     
 
 ```{r high freq results, eval=TRUE, echo=FALSE, message=FALSE}
+#calculate medians and IQRs
 raw_high_median_e <- median(E_chans_high_log$mean_E)
 raw_high_iqr_e <- IQR(E_chans_high_log$mean_E)
 
 raw_high_median_m <- median(M_chans_high_log$mean_M)
 raw_high_iqr_m <- IQR(M_chans_high_log$mean_M)
 
-#Test of mean differences
+#Test of central tendency differences
 raw_high_wil <- wilcox.test(E_chans_high_log$mean_E, M_chans_high_log$mean_M,paired=TRUE)
-
+#use the plot data structure to calculate the Wilcoxon effect size
 raw_high_es <- wilcox_effsize(df_means_high, all_chans_high ~ group, paired=TRUE)
  
 #Test of homogeneity of variances
@@ -248,8 +248,9 @@ df_preproc <- read.csv("pre_processing_data.csv")
 ## **0.1-2Hz**    
 
 ```{r low freq processed, eval=TRUE, echo=FALSE}
-
+#Import data
 df_range_low_c <- read.csv("range_2Hz_all.csv")
+#remove participant info
 df_range_low_c <- df_range_low_c[,-c(1,2)]
 
 # Select EasyCap data and log transform
@@ -282,20 +283,22 @@ df_means_low_c$group <- as.factor(df_means_low_c$group)
    
   
 ```{r low freq results processed, eval=TRUE, echo=FALSE, message=FALSE}  
+#Calculate medians and IQRs
 range_low_median_e <- median(E_chans_low_log_c$mean_E)
 range_low_iqr_e <- IQR(E_chans_low_log_c$mean_E)
 
 range_low_median_m <- median(M_chans_low_log_c$mean_M)
 range_low_iqr_m <- IQR(M_chans_low_log_c$mean_M)
 
-#Test of mean difference 
+#Test of central tendency difference 
 range_low_wil <- wilcox.test(E_chans_low_log_c$mean_E, M_chans_low_log_c$mean_M,paired=TRUE)
-
+#calculate the Wilcoxon effect size using the data structure for plotting
 range_low_es <- wilcox_effsize(df_means_low_c, all_chans_low_c ~ group, paired=TRUE)
 
 #Test of homogeneity of variance 
 range_low_flig <- fligner.test(all_chans_low_c ~ group, data = df_means_low_c)
 
+#individual differences plot
 pirateplot(formula = all_chans_low_c~group, #which variables are you using
            data = df_means_low_c,
            theme = 0, 
@@ -382,21 +385,23 @@ df_means_high_c$group <- as.factor(df_means_high_c$group)
 - Fligner-Killeen test 
 
 ```{r high freq results processed, eval=TRUE, echo=FALSE, message=FALSE}
+#Calculate medians and IQRs
 range_high_median_e <- median(E_chans_high_log_c$mean_E)
 range_high_iqr_e <- IQR(E_chans_high_log_c$mean_E)
 
 range_high_median_m <- median(M_chans_high_log_c$mean_M)
 range_high_iqr_m <- IQR(M_chans_high_log_c$mean_M)
 
-# Test of mean differences
+# Test of central tendency differences
 range_high_wil <- wilcox.test(E_chans_high_log_c$mean_E, M_chans_high_log_c$mean_M,paired=TRUE)
-
+# Caluclate the Wilcoxon effect size using the plot data structure
 range_high_es <- wilcox_effsize(df_means_high_c, all_chans_high_c ~ group, paired=TRUE)
 
 
 #Test of homogeneity of variances
 range_high_flig <- fligner.test(all_chans_high_c ~ group, data = df_means_high_c)
 
+#Individual differences plot
 pirateplot(formula = all_chans_high_c~group, #which variables are you using
            data = df_means_high_c,
            theme = 0, 
@@ -450,7 +455,7 @@ Bonferroni correction x8 as there are 2 tests for each of the 2 frequency bands 
 ******
   
 ## **Rejected artefactual trials**  
-There were three types of trials extracted for the analyses in this study. Stimulus locked trials, response locked trials with correct responses and response locked trials with incorrect responses. Proportion of rejected trials was calculated only for the stimulus-locked trials as the total number of trials was the largest in this type whereas for the response-locked trials, the total number was divided into two types.  
+There were three types of trials extracted for the analyses in this study. Stimulus locked trials, response locked trials with correct responses and response locked trials with incorrect responses. Proportion of rejected trials was calculated only for the stimulus-locked trials as the total number of trials was the largest in this type whereas for the response-locked trials, the total number was split (correct/incorrect).    
   
 - Pirate Plot 
 - Median (IQR) for Easy Cap 
@@ -491,10 +496,10 @@ group[11:20] <- 2
 df_rej_art <- as.data.frame(cbind(rej_art, group))
 df_rej_art$group <- as.factor(df_rej_art$group)
 
-#Flinger test
+#Fligner test of variance
 stim_rej_flig <- fligner.test(rej_art ~ group, data = df_rej_art)
 
-#Calculate the effect size for Wilcoxon
+#Calculate the effect size for Wilcoxon using the plot data structure
 stim_rej_es <- wilcox_effsize(df_rej_art, rej_art ~ group, paired=TRUE)
 
 #plot
@@ -652,7 +657,7 @@ axis(2, at = seq(0.01, .18, by = 0.03)) #set the numbers on the y axis
 ```
 
 The results are non-significant.  
-Bonferroni correction x4 as there are 2 tests and 2 measures of noise.  
+Bonferroni correction x4 as there are 2 tests and 2 measures of noise (SNR & RMS).  
   
 **Median for EasyCap:** `r SNR_median_e`(`r SNR_iqr_e`)  
 **Median for Mobita:** `r SNR_median_m`(`r SNR_median_m`)  
@@ -736,7 +741,7 @@ axis(2, at = seq(7, 98, by = 10)) #set the numbers on the y axis
 ```
 
 Fligner-Kileen test is significant for RMS between EasyCap and Mobita.  
-Bonferroni correction x4 as there are 2 tests and 2 measures of noise.  
+Bonferroni correction x4 as there are 2 tests and 2 measures of noise (SNR & RS).  
   
 **Median for EasyCap:** `r RMS_median_e`(`r RMS_iqr_e`)  
 **Median for Mobita:** `r RMS_median_m`(`r RMS_iqr_m`)  
@@ -763,14 +768,14 @@ df_theta <- read.csv("FFT_range_theta_all.csv")
 **1. Electrode matching**  
 
 Select the electrodes that were identified to have strongest activity for theta band and which are overlapping between the two systems.   
-Select from a subset of frontal elecrodes only:  
+Select from a subset of the following electrodes only:  
 F3, Fz, F4, FC5, FC1, FC2, FC6, C3, Cz, C4, CP5, CP1, CP2, CP6, P3, Pz, P4  
 The above subset excludes electrodes located on the edges of the cap which are prone to noise and extreme values.  
   
 Overlapping electrodes: Fz, F4, FC1, FC2  
 
 ```{r matched electrodes, eval=TRUE, echo=FALSE}
-
+#select the matching electrodes
 df_theta_matched <- df_theta
 df_theta_matched <- select(df_theta_matched, starts_with(c("Fz", "F4", "FC1", "FC2")))
 
@@ -778,11 +783,11 @@ df_theta_matched <- select(df_theta_matched, starts_with(c("Fz", "F4", "FC1", "F
 
 
 ```{r theta average, eval=TRUE, echo=FALSE}
-
+#make sure that the data are numeric
 df_theta_matched <- as.data.frame(apply(df_theta_matched, 2, as.numeric))
 
 # EasyCap
-
+#Calculate avergaes and log transform
 theta_E <- df_theta_matched
 theta_E <- select(df_theta_matched, contains("E")) 
                    
@@ -794,6 +799,7 @@ df_theta_matched$theta_av_E_log <- log(df_theta_matched$theta_av_E)
 
 
 # Mobita
+#Calculate avergaes and log transform
 theta_M <- df_theta_matched
 theta_M <- select(df_theta_matched, contains("M")) 
                    
@@ -808,7 +814,7 @@ df_theta_matched$theta_av_M_log <- log(df_theta_matched$theta_av_M)
 
 **2. Results **   
   
-- Spearman Correlation 
+- Kendall Correlation 
 - Pirate Plots 
 - Median (IQR) for EasyCap 
 - Median (IQR) for Mobita 
@@ -819,23 +825,26 @@ df_theta_matched$theta_av_M_log <- log(df_theta_matched$theta_av_M)
 
 
 ```{r theta plot and test, eval=TRUE, echo=FALSE, message=FALSE}
-
+#Calculate medians and IQRs
 theta_median_e <- median(df_theta_matched$theta_av_E_log)
 theta_iqr_e <- IQR(df_theta_matched$theta_av_E_log)
 
 theta_median_m <- median(df_theta_matched$theta_av_M_log)
 theta_iqr_m <- IQR(df_theta_matched$theta_av_M_log)
 
+#Kendall Correlation
 theta_cor <- cor.test(df_theta_matched$theta_av_E_log, df_theta_matched$theta_av_M_log, method="kendall") 
 
-
+#Scatter plot
 ggplot(df_theta_matched, aes(x=theta_av_E_log, y=theta_av_M_log))+ 
   geom_point()+
   geom_smooth(method=lm, fullrange=TRUE)+
   theme_classic()
 
+#Wilcoxon test
 theta_wil <- wilcox.test(df_theta_matched$theta_av_E_log, df_theta_matched$theta_av_M_log, paired=TRUE)  
 
+#New data structure for further plotting and tests
 all_theta_av <- df_theta_matched$theta_av_E_log
 all_theta_av[11:20] <- df_theta_matched$theta_av_M_log
 group <- 1:20
@@ -844,13 +853,13 @@ group[11:20] <- 2
 df_theta_av <- as.data.frame(cbind(all_theta_av, group))
 df_theta_av$group <- as.factor(df_theta_av$group)  
   
-#test of variance 
+#Fligner-Killeen test of variance 
 theta_flig <- fligner.test(all_theta_av ~ group, data = df_theta_av)
 
 #wilcoxon effect size using the new data structure
 theta_es <- wilcox_effsize(df_theta_av, all_theta_av ~ group, paired=TRUE)
 
-
+#Individual differences plots
 pirateplot(formula = all_theta_av~group, #which variables are you using
            data = df_theta_av,
            theme = 0, 
@@ -901,7 +910,7 @@ Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.
 ## **Alpha analysis** 
 ```{r load data alpha, eval=TRUE, echo=FALSE}
 
-#import Theta frequency data
+#import alpha frequency data
 df_alpha <- read.csv("FFT_range_alpha_all.csv")
 
 ```
@@ -909,7 +918,7 @@ df_alpha <- read.csv("FFT_range_alpha_all.csv")
 **Electrode matching**  
 
 Select the electrodes that were identified to have strongest activity for theta band and which are overlapping between the two systems.   
-Select from a subset of frontal elecrodes only:  
+Select from a subset of the following elecrodes only:  
 F3, Fz, F4, FC5, FC1, FC2, FC6, C3, Cz, C4, CP5, CP1, CP2, CP6, P3, Pz, P4  
 The above subset excludes electrodes located on the edges of the cap which are prone to noise and extreme values.  
   
@@ -917,7 +926,7 @@ Overlapping electrodes: Fz, Pz, P4
   
 
 ```{r matched electrodes alpha, eval=TRUE, echo=FALSE}
-
+#select the matching electrodes
 df_alpha_matched <- df_alpha
 df_alpha_matched <- select(df_alpha, starts_with(c("Fz", "Pz", "P4")))
 
@@ -926,11 +935,11 @@ df_alpha_matched <- select(df_alpha, starts_with(c("Fz", "Pz", "P4")))
 
 
 ```{r alpha average, eval=TRUE, echo=FALSE}
-
+#make sure that the data are numeric
 df_alpha_matched <- as.data.frame(apply(df_alpha_matched, 2, as.numeric))
 
 # EasyCap
-
+#Calculate averages and log transform
 alpha_E <- df_alpha_matched
 alpha_E <- select(df_alpha_matched, contains("E")) 
                    
@@ -942,7 +951,7 @@ df_alpha_matched$alpha_av_E_log <- log(df_alpha_matched$alpha_av_E)
 
 
 # Mobita
-
+#Calculate averages and log transform
 alpha_M <- df_alpha_matched
 alpha_M <- select(df_alpha_matched, contains("M")) 
                    
@@ -961,30 +970,33 @@ df_alpha_matched$alpha_av_M_log <- log(df_alpha_matched$alpha_av_M)
 - Pirate Plots 
 - Median (IQR) for EasyCap 
 - Median (IQR) for Mobita 
-- Spearman Correlation 
+- Kendall Correlation 
 - Wilcoxon Test 
 - Fligner-Killeen test  
   
   
   
 ```{r alpha plot and test, eval=TRUE, echo=FALSE, message=FALSE}
-
+#Calculate medians and IQRs
 alpha_median_e <- median(df_alpha_matched$alpha_av_E_log)
 alpha_iqr_e <- IQR(df_alpha_matched$alpha_av_E_log)
 
 alpha_median_m <- median(df_alpha_matched$alpha_av_M_log)
 alpha_iqr_m <- IQR(df_alpha_matched$alpha_av_M_log)
 
+#Kendall Correlation
 alpha_cor <- cor.test(df_alpha_matched$alpha_av_E_log, df_alpha_matched$alpha_av_M_log, method="kendall")
 
-
+#Scatter Plot
 ggplot(df_alpha_matched, aes(x=alpha_av_E_log, y=alpha_av_M_log))+ 
   geom_point()+
   geom_smooth(method=lm, fullrange=TRUE)+
   theme_classic()
 
+#Wilcoxon test of difference in central tendency
 alpha_wil <- wilcox.test(df_alpha_matched$alpha_av_E_log, df_alpha_matched$alpha_av_M_log, paired=TRUE)  
   
+#New data structure for further plotting and tests
 all_alpha_av <- df_alpha_matched$alpha_av_E_log
 all_alpha_av[11:20] <- df_alpha_matched$alpha_av_M_log
 group <- 1:20
@@ -999,6 +1011,7 @@ alpha_flig <- fligner.test(all_alpha_av ~ group, data = df_alpha_av)
 #wilcoxon effect size using the new data structure
 alpha_es <- wilcox_effsize(df_alpha_av, all_alpha_av ~ group, paired=TRUE)
 
+#Individual differences plot
 pirateplot(formula = all_alpha_av~group, #which variables are you using
            data = df_alpha_av,
            theme = 0, 
@@ -1049,7 +1062,7 @@ Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.
 ## **Low Beta Analysis**
 ```{r load data lbeta, eval=TRUE, echo=FALSE}
 
-#import Theta frequency data
+#import lowe beta frequency data
 df_lbeta <- read.csv("FFT_range_low_beta_all.csv")
 
 ```
@@ -1057,14 +1070,14 @@ df_lbeta <- read.csv("FFT_range_low_beta_all.csv")
 **1. Electrode matching**  
 
 Select the electrodes that were identified to have strongest activity for theta band and which are overlapping between the two systems.   
-Select from a subset of frontal elecrodes only:  
+Select from a subset the following elecrodes only:  
 F3, Fz, F4, FC5, FC1, FC2, FC6, C3, Cz, C4, CP5, CP1, CP2, CP6, P3, Pz, P4  
 The above subset excludes electrodes located on the edges of the cap which are prone to noise and extreme values.  
   
 Overlapping electrodes: F4  
 
 ```{r matched electrodes lbeta, eval=TRUE, echo=FALSE}
-
+#select data for overlapping electrodes
 df_lbeta_matched <- df_lbeta
 df_lbeta_matched <- select(df_lbeta, starts_with("F4"))
 
@@ -1072,11 +1085,11 @@ df_lbeta_matched <- select(df_lbeta, starts_with("F4"))
 
 
 ```{r lbeta average, eval=TRUE, echo=FALSE}
-
+#Make sure that the data are numeric
 df_lbeta_matched <- as.data.frame(apply(df_lbeta_matched, 2, as.numeric))
 
 # EasyCap
-
+#Calculate means and log transform
 lbeta_E <- df_lbeta_matched
 lbeta_E <- select(df_lbeta_matched, contains("E")) 
                    
@@ -1088,7 +1101,7 @@ df_lbeta_matched$lbeta_av_E_log <- log(df_lbeta_matched$lbeta_av_E)
 
 
 # Mobita
-
+#Calculate means and log transform
 lbeta_M <- df_lbeta_matched
 lbeta_M <- select(df_lbeta_matched, contains("M")) 
                    
@@ -1107,31 +1120,33 @@ df_lbeta_matched$lbeta_av_M_log <- log(df_lbeta_matched$lbeta_av_M)
 - Pirate Plots 
 - Median (IQR) for EasyCap 
 - Median (IQR) for Mobita 
-- Spearman Correlation 
+- Kendall Correlation 
 - Wilcoxcon Test 
 - Fligner-Killeen test  
   
   
 
 ```{r lbeta plot and test, eval=TRUE, echo=FALSE, message=FALSE}
-
+#Calculate medians and IQRs
 lbeta_median_e <- median(df_lbeta_matched$lbeta_av_E_log)
 lbeta_iqr_e <- IQR(df_lbeta_matched$lbeta_av_E_log)
 
 lbeta_median_m <- median(df_lbeta_matched$lbeta_av_M_log)
 lbeta_iqr_m <- IQR(df_lbeta_matched$lbeta_av_M_log)
 
+#Kendall Correlation
 lbeta_cor <- cor.test(df_lbeta_matched$lbeta_av_E_log, df_lbeta_matched$lbeta_av_M_log, method="kendall")
 
-
+#Scatter plot
 ggplot(df_lbeta_matched, aes(x=lbeta_av_E_log, y=lbeta_av_M_log))+ 
   geom_point()+
   geom_smooth(method=lm, fullrange=TRUE)+
   theme_classic()
 
+#Wilcoxon test of difference in central tendency
 lbeta_wil <- wilcox.test(df_lbeta_matched$lbeta_av_E_log, df_lbeta_matched$lbeta_av_M_log, paired=TRUE)
 
-
+#New data structure for further plots and tests
 all_lbeta_av <- df_lbeta_matched$lbeta_av_E_log
 all_lbeta_av[11:20] <- df_lbeta_matched$lbeta_av_M_log
 group <- 1:20
@@ -1146,6 +1161,7 @@ lbeta_flig <- fligner.test(all_lbeta_av ~ group, data = df_lbeta_av)
 #wilcoxon effect size using the new data structure
 lbeta_es <- wilcox_effsize(df_lbeta_av, all_lbeta_av ~ group, paired=TRUE)
 
+#plot of individual differences
 pirateplot(formula = all_lbeta_av~group, #which variables are you using
            data = df_lbeta_av,
            theme = 0, 
@@ -1196,7 +1212,7 @@ Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.
 ## **High Beta Analysis**
 ```{r load data hbeta, eval=TRUE, echo=FALSE}
 
-#import Theta frequency data
+#import high beta frequency data
 df_hbeta <- read.csv("FFT_range_high_beta_all.csv")
 
 ```
@@ -1204,14 +1220,14 @@ df_hbeta <- read.csv("FFT_range_high_beta_all.csv")
 **Electrode matching**  
 
 Select the electrodes that were identified to have strongest activity for theta band and which are overlapping between the two systems.   
-Select from a subset of frontal elecrodes only:  
+Select from a subset of the following electrodes only:  
 F3, Fz, F4, FC5, FC1, FC2, FC6, C3, Cz, C4, CP5, CP1, CP2, CP6, P3, Pz, P4  
 The above subset excludes electrodes located on the edges of the cap which are prone to noise and extreme values.  
   
 Overlapping electrodes: CP1, CP2, Pz, P4   
 
 ```{r matched electrodes hbeta, eval=TRUE, echo=FALSE}
-
+#Select the overlapping electrodes
 df_hbeta_matched <- df_hbeta
 df_hbeta_matched <- select(df_hbeta, starts_with(c("CP1", "CP2", "Pz", "P4")))
 
@@ -1219,11 +1235,11 @@ df_hbeta_matched <- select(df_hbeta, starts_with(c("CP1", "CP2", "Pz", "P4")))
 
 
 ```{r hbeta average, eval=TRUE, echo=FALSE}
-
+#Make sure that the data are numeric
 df_hbeta_matched <- as.data.frame(apply(df_hbeta_matched, 2, as.numeric))
 
 # EasyCap
-
+#Calculate averages and log transform
 hbeta_E <- df_hbeta_matched
 hbeta_E <- select(df_hbeta_matched, contains("E")) 
                    
@@ -1235,7 +1251,7 @@ df_hbeta_matched$hbeta_av_E_log <- log(df_hbeta_matched$hbeta_av_E)
 
 
 # Mobita
-
+#Calculate averages and log transform
 hbeta_M <- df_hbeta_matched
 hbeta_M <- select(df_hbeta_matched, contains("M")) 
                    
@@ -1254,29 +1270,32 @@ df_hbeta_matched$hbeta_av_M_log <- log(df_hbeta_matched$hbeta_av_M)
 - Pirate Plots 
 - Median (IQR) for EasyCap 
 - Median (IQR) for Mobita 
-- Spearman Correlation 
+- Kendall Correlation 
 - Wilcoxon Test 
 - Fligner-Killeen test  
   
 
 ```{r hbeta plot and test, eval=TRUE, echo=FALSE, message=FALSE}
-
+#Calculate medians and IQRs
 hbeta_median_e <- median(df_hbeta_matched$hbeta_av_E_log)
 hbeta_iqr_e <- IQR(df_hbeta_matched$hbeta_av_E_log)
 
 hbeta_median_m <- median(df_hbeta_matched$hbeta_av_M_log)
 hbeta_iqr_m <- IQR(df_hbeta_matched$hbeta_av_M_log)
 
+#Kendall Correlation
 hbeta_cor <- cor.test(df_hbeta_matched$hbeta_av_E_log, df_hbeta_matched$hbeta_av_M_log, method="kendall")
 
-
+#Scatter plot
 ggplot(df_hbeta_matched, aes(x=hbeta_av_E_log, y=hbeta_av_M_log))+ 
   geom_point()+
   geom_smooth(method=lm, fullrange=TRUE)+
   theme_classic()
 
+#Caluclate the Wilcoxon test for differences in central tendency
 hbeta_wil <- wilcox.test(df_hbeta_matched$hbeta_av_E_log, df_hbeta_matched$hbeta_av_M_log, paired=TRUE)  
 
+#New data structure for further plots and tests
 all_hbeta_av <- df_hbeta_matched$hbeta_av_E_log
 all_hbeta_av[11:20] <- df_hbeta_matched$hbeta_av_M_log
 group <- 1:20
@@ -1291,6 +1310,7 @@ hbeta_flig <- fligner.test(all_hbeta_av ~ group, data = df_hbeta_av)
 #wilcoxon effect size using the new data structure
 hbeta_es <- wilcox_effsize(df_hbeta_av, all_hbeta_av ~ group, paired=TRUE)
 
+#Individual differences plot
 pirateplot(formula = all_hbeta_av~group, #which variables are you using
            data = df_hbeta_av,
            theme = 0, 
@@ -1352,24 +1372,27 @@ Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.
   
 - Correlation Plot 
 - Pirate Plot 
-- Median for Easy Cap 
-- Median for Mobita 
+- Median (IQR) for Easy Cap 
+- Median (IQR) for Mobita 
 - Correlation Test 
 - Wilcoxon test results 
 - Fligner-Killeen test  
   
   
 ```{r P300, eval=TRUE, echo=FALSE,  warning=FALSE, message=FALSE}
-
+#Import P300 data
 df_P300 <- read.csv('P300.csv')
 
 #Median EasyCap
 P300_median_e <- median(df_P300$Pz_E)
+P300_iqr_e <- IQR(df_P300$Pz_E)
+
 #Median Mobita
 P300_median_m <- median(df_P300$Pz_M)
+P300_iqr_m <- IQR(df_P300$Pz_M)
 
-#Spearman Correlation
-P300_cor <- cor.test(df_P300$Pz_E, df_P300$Pz_M, method="spearman")
+#Kendall's Tau Correlation
+P300_cor <- cor.test(df_P300$Pz_E, df_P300$Pz_M, method="kendall")
 
 #Correlation plot
 ggplot(df_P300, aes(x=Pz_E, y=Pz_M))+ 
@@ -1381,6 +1404,7 @@ ggplot(df_P300, aes(x=Pz_E, y=Pz_M))+
 #Wilcoxon test
 P300_wil <- wilcox.test(df_P300$Pz_E, df_P300$Pz_M, paired=TRUE)  
 
+#New data structure for further plots and tests
 P300 <- df_P300$Pz_E
 P300[11:20] <- df_P300$Pz_M 
 group <- 1:20
@@ -1389,8 +1413,13 @@ group[11:20] <- 2
 df_P300_plot <- as.data.frame(cbind(P300, group))
 df_P300_plot$group <- as.factor(df_P300_plot$group)
 
+# Test of difference in variance using the new data structure
 P300_flig <- fligner.test(P300 ~ group, data = df_P300_plot)
 
+#Effect size for Wilcoxon using the new data structure
+P300_es <- wilcox_effsize(df_P300_plot, P300 ~ group, paired=TRUE)
+
+#Individual differences plot
 pirateplot(formula = P300~group, #which variables are you using
            data = df_P300_plot,
            theme = 0, 
@@ -1418,19 +1447,19 @@ pirateplot(formula = P300~group, #which variables are you using
            quant = c(.05, .95) #set the quantile, here within 5% on each side to indicate outliers
            )
 #here are some additional commands that add onto the plot
-axis(2, at = seq(-1, 5, by = 1)) #set the numbers on the y axis
+axis(2, at = seq(-2, 7, by = 3)) #set the numbers on the y axis
 
 ```
 The results are non-significant. 
 Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
 
-**Median EasyCap =** `r P300_median_e`     
+**Median EasyCap =** `r P300_median_e`(`r P300_iqr_e`)  
   
-**Median Mobita =** `r P300_median_m`  
+**Median Mobita =** `r P300_median_m`(`r P300_iqr_m`)  
 
 **Correlation:** r = `r P300_cor$estimate`, p = `r P300_cor$p.value`, Bonferroni p = `r P300_cor$p.value*14`  
   
-**Wilcoxon:** V = `r P300_wil$statistic`, p = `r P300_wil$p.value`, Bonferroni p = `r P300_wil$p.value*14`  
+**Wilcoxon:** V = `r P300_wil$statistic`, p = `r P300_wil$p.value`, Bonferroni p = `r P300_wil$p.value*14`, r = `r P300_es$effsize` (`r P300_es$magnitude`)   
   
 **Fligner-Killeen:** X^2^ = `r P300_flig$statistic`, p = `r P300_flig$p.value`, Bonferroni p = `r P300_flig$p.value*14`
   
@@ -1441,25 +1470,29 @@ Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for eac
 **Latency**  
 
 - Pirate Plot 
-- Median for Easy Cap 
-- Median for Mobita 
+- Median (IQR) for Easy Cap 
+- Median (IQR) for Mobita 
 - Wilcoxon test results 
 - Fligner-Killeen test  
   
 
 ```{r P300 latency, eval=TRUE, echo=FALSE,  warning=FALSE, message=FALSE}
-#the peaks a re extracted from the difference wave already
+#the peaks are extracted from the difference wave already
 df_P300_peak <- read.csv('P300_peak.csv')
 
 
 #Median for the peak latency EasyCap
 P300_lat_median_e <- median(df_P300_peak$Time_E)
+P300_lat_iqr_e <- IQR(df_P300_peak$Time_E)
+
 #Median for the peak latency Mobita
 P300_lat_median_m <- median(df_P300_peak$Time_M)
+P300_lat_iqr_m <- IQR(df_P300_peak$Time_M)
 
 #Wilcoxon test
 P300_lat_wil <- wilcox.test(df_P300_peak$Time_E, df_P300_peak$Time_M, paired=TRUE)  
 
+#Make a new data structure for further plotting and tests
 P300_peak <- df_P300_peak$Time_E
 P300_peak[11:20] <- df_P300_peak$Time_M 
 group <- 1:20
@@ -1468,8 +1501,13 @@ group[11:20] <- 2
 df_P300_peak_plot <- as.data.frame(cbind(P300_peak, group))
 df_P300_peak_plot$group <- as.factor(df_P300_peak_plot$group)
 
+#Test of difference of variance using the new data structure
 P300_lat_flig <- fligner.test(P300_peak ~ group, data = df_P300_peak_plot)
 
+#Effect size for Wilcoxon using the new data structure
+P300_lat_es <- wilcox_effsize(df_P300_peak_plot, P300_peak ~ group, paired=TRUE)
+
+#Individual data plots
 pirateplot(formula = P300_peak~group, #which variables are you using
            data = df_P300_peak_plot,
            theme = 0, 
@@ -1504,11 +1542,11 @@ axis(2, at = seq(266, 379, by = 10)) #set the numbers on the y axis
 The results are non-significant. 
 Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
 
-**Median EasyCap =** `r P300_lat_median_e`     
+**Median EasyCap =** `r P300_lat_median_e`(`r P300_lat_iqr_e`)  
   
-**Median Mobita =** `r P300_lat_median_m`  
+**Median Mobita =** `r P300_lat_median_m`(`r P300_lat_iqr_m`)  
 
-**Wilcoxon:** V = `r P300_lat_wil$statistic`, p = `r P300_lat_wil$p.value`, Bonferroni p = `r P300_lat_wil$p.value*14`  
+**Wilcoxon:** V = `r P300_lat_wil$statistic`, p = `r P300_lat_wil$p.value`, Bonferroni p = `r P300_lat_wil$p.value*14`, r = `r P300_lat_es$effsize` (`r P300_lat_es$magnitude`)  
   
 **Fligner-Killeen:** X^2^ = `r P300_lat_flig$statistic`, p = `r P300_lat_flig$p.value`, Bonferroni p = `r P300_lat_flig$p.value*14`
   
@@ -1520,8 +1558,8 @@ Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for eac
   
 
 - Pirate Plot 
-- Median for Easy Cap 
-- Median for Mobita 
+- Median (IQR) for Easy Cap 
+- Median (IQR) for Mobita 
 - Wilcoxon test results 
 - Fligner-Killeen test  
   
@@ -1530,15 +1568,18 @@ Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for eac
 #the peaks a re extracted from the difference wave already
 df_P300_peak <- read.csv('P300_peak.csv')
 
-
 #Median for the peak latency EasyCap
 P300_amp_median_e <- median(df_P300_peak$Amp_E)
+P300_amp_iqr_e <- IQR(df_P300_peak$Amp_E)
+
 #Median for the peak latency Mobita
 P300_amp_median_m <- median(df_P300_peak$Amp_M)
-
+P300_amp_iqr_m <- IQR(df_P300_peak$Amp_M)
+  
 #Wilcoxon test
 P300_amp_wil <- wilcox.test(df_P300_peak$Amp_E, df_P300_peak$Amp_M, paired=TRUE)  
 
+#New data structure for further plotting and tests
 P300_peak_amp <- df_P300_peak$Amp_E
 P300_peak_amp[11:20] <- df_P300_peak$Amp_M 
 group <- 1:20
@@ -1547,8 +1588,12 @@ group[11:20] <- 2
 df_P300_peak_amp_plot <- as.data.frame(cbind(P300_peak_amp, group))
 df_P300_peak_amp_plot$group <- as.factor(df_P300_peak_amp_plot$group)
 
+#Test of difference in variance using the new data structure
 P300_amp_flig <- fligner.test(P300_peak_amp ~ group, data = df_P300_peak_amp_plot)
+#Effect size for Wilcoxon using the new data structure
+P300_amp_es <- wilcox_effsize(df_P300_peak_amp_plot, P300_peak_amp ~ group, paired=TRUE)
 
+#Individual data plots
 pirateplot(formula = P300_peak_amp~group, #which variables are you using
            data = df_P300_peak_amp_plot,
            theme = 0, 
@@ -1583,11 +1628,11 @@ axis(2, at = seq(-3, 8, by = 3)) #set the numbers on the y axis
 The results are non-significant. 
 Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
 
-**Median EasyCap =** `r P300_amp_median_e`     
+**Median EasyCap =** `r P300_amp_median_e`(`r P300_amp_iqr_e`)  
   
-**Median Mobita =** `r P300_amp_median_m`  
+**Median Mobita =** `r P300_amp_median_m`(`r P300_amp_iqr_m`)  
 
-**Wilcoxon:** V = `r P300_amp_wil$statistic`, p = `r P300_amp_wil$p.value`, Bonferroni p = `r P300_amp_wil$p.value*14`  
+**Wilcoxon:** V = `r P300_amp_wil$statistic`, p = `r P300_amp_wil$p.value`, Bonferroni p = `r P300_amp_wil$p.value*14`, r = `r P300_amp_es$effsize` (`r P300_amp_es$magnitude`)  
   
 **Fligner-Killeen:** X^2^ = `r P300_amp_flig$statistic`, p = `r P300_amp_flig$p.value`, Bonferroni p = `r P300_amp_flig$p.value*14`
   
@@ -1597,6 +1642,290 @@ Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for eac
 **P300 Plots**  
 ![Plots](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\EasyCap_Mobita_Report\P300.jpg)  
   
+  
+## **ERN**  
+  
+**Mean Amplitude** 
+
+- Correlation Plot 
+- Pirate Plot 
+- Median (IQR) for Easy Cap 
+- Median (IQR) for Mobita 
+- Correlation Test 
+- Wilcoxon test results 
+- Fligner-Killeen test  
+  
+
+```{r ERN, eval=TRUE, echo=FALSE,  warning=FALSE, message=FALSE}
+#Import ERN data
+df_ERN <- read.csv('ERN.csv')
+#remove participant 4 as they only had 5 trials available for comparison
+df_ERN <- df_ERN[-4,]
+
+#create difference waves 
+# EasyCap
+df_ERN <- mutate(df_ERN, dif_E = Err_Cz_E - Corr_Cz_E)
+#Mobita
+df_ERN <- mutate(df_ERN, dif_M = Err_Cz_M - Corr_Cz_M)
+
+#Median for the difference wave EasyCap
+ERN_median_e <- median(df_ERN$dif_E)
+ERN_iqr_e <- IQR(df_ERN$dif_E)
+
+#Median for the difference wave Mobita
+ERN_median_m <- median(df_ERN$dif_M)
+ERN_iqr_m <- IQR(df_ERN$dif_M)
+
+#Kendall Correlation
+ERN_cor <- cor.test(df_ERN$dif_E, df_ERN$dif_M, method="kendall")
+
+#Correlation plot
+ggplot(df_ERN, aes(x=dif_E, y=dif_M))+ 
+  geom_point()+
+  geom_smooth(method=lm, fullrange=TRUE)+
+  theme_classic()
+
+
+#Wilcoxon test
+ERN_wil <- wilcox.test(df_ERN$dif_E, df_ERN$dif_M, paired=TRUE)  
+
+#Create a new data structure for plotting and further tests
+ERN <- df_ERN$dif_E
+ERN[10:18] <- df_ERN$dif_M 
+group_ERN <- 1:18
+group_ERN[1:9] <- 1
+group_ERN[10:18] <- 2
+df_ERN_plot <- as.data.frame(cbind(ERN, group_ERN))
+df_ERN_plot$group_ERN <- as.factor(df_ERN_plot$group_ERN)
+
+#Test of variance 
+ERN_flig <- fligner.test(ERN ~ group_ERN, data = df_ERN_plot)
+
+#Wilcoxon effect size
+ERN_es <- wilcox_effsize(df_ERN_plot, ERN ~ group_ERN, paired=TRUE)
+
+#Individual data plot
+pirateplot(formula = ERN~group_ERN, #which variables are you using
+           data = df_ERN_plot,
+           theme = 0, 
+           main = "ERN Mean Amplitude Per System", #title of the graph
+           par(cex.main = 1.2), #set the size of your title
+           xlab="EEG System", #label of the x axis
+           ylab="ERN Mean Amplitude in Micro Volts", #label of the y axis
+           cex.lab = 1.2, #size of the axis labels
+           pal = "basel", 
+           inf.method = 'iqr', # IQR box
+           avg.line.fun = median,
+           bean.f.o = 0.5, # Bean fill darkness
+           point.o = .3, # points darkness
+           inf.f.o = .5, # Inference fill
+           inf.b.o = .5, # Inference border
+           avg.line.o = 0.7, # Average line darkness
+           inf.f.col = "white", # Inf fill col
+           inf.b.col = "black", # Inf border col
+           avg.line.col = "black", # avg line col
+           point.pch = 20, #point shape
+           point.col = "black", #point colour
+           point.cex = 1, #point size
+           gl.col = "#FFCCFF", #gridlines and colour
+           yaxt ="n", # remove the automatic scale on the axis Y
+           quant = c(.05, .95) #set the quantile, here within 5% on each side to indicate outliers
+           )
+#here are some additional commands that add onto the plot
+axis(2, at = seq(-12, 6, by = 3)) #set the numbers on the y axis
+
+```
+
+The results are non-significant. 
+Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
+
+**Median EasyCap =** `r ERN_median_e`(`r ERN_iqr_e`)     
+  
+**Median Mobita =** `r ERN_median_m`(`r ERN_iqr_m`)  
+  
+**Correlation:** r = `r ERN_cor$estimate`, p = `r ERN_cor$p.value`, Bonferroni p = `r ERN_cor$p.value*14` 
+
+**Wilcoxon:** V = `r ERN_wil$statistic`, p = `r ERN_wil$p.value`, Bonferroni p = `r ERN_wil$p.value*14`, r = `r ERN_es$effsize` (`r ERN_es$magnitude`)  
+  
+**Fligner-Killeen:** X^2^ = `r ERN_flig$statistic`, p = `r ERN_flig$p.value`, Bonferroni p = `r ERN_flig$p.value*14`
+  
+******  
+  
+  
+**Peak Latency**  
+
+- Pirate Plot 
+- Median (IQR) for Easy Cap 
+- Median (IQR) for Mobita 
+- Wilcoxon test results 
+- Fligner-Killeen test  
+  
+
+```{r ERN latency, eval=TRUE, echo=FALSE,  warning=FALSE}
+#the peaks are extracted from the difference wave already
+df_ERN_peak <- read.csv('ERN_peak.csv')
+
+
+#Median for the peak latency EasyCap
+ERN_lat_median_e <- median(df_ERN_peak$Time_E)
+ERN_lat_iqr_e <- IQR(df_ERN_peak$Time_E)
+
+#Median for the peak latency Mobita
+ERN_lat_median_m <- median(df_ERN_peak$Time_M)
+ERN_lat_iqr_m <- IQR(df_ERN_peak$Time_M)
+
+#Wilcoxon test
+ERN_lat_wil <- wilcox.test(df_ERN_peak$Time_E, df_ERN_peak$Time_M, paired=TRUE)  
+
+#Create a new data structure for plots and further tests
+ERN_peak <- df_ERN_peak$Time_E
+ERN_peak[10:18] <- df_ERN_peak$Time_M 
+group_ERN <- 1:18
+group_ERN[1:9] <- 1
+group_ERN[10:18] <- 2
+df_ERN_peak_plot <- as.data.frame(cbind(ERN_peak, group_ERN))
+df_ERN_peak_plot$group_ERN <- as.factor(df_ERN_peak_plot$group_ERN)
+
+#test of variance
+ERN_lat_flig <- fligner.test(ERN_peak ~ group_ERN, data = df_ERN_peak_plot)
+
+#effect size for Wilcoxon
+ERN_lat_es <- wilcox_effsize(df_ERN_peak_plot, ERN_peak ~ group_ERN, paired=TRUE)
+
+#individual data plot
+pirateplot(formula = ERN_peak~group_ERN, #which variables are you using
+           data = df_ERN_peak_plot,
+           theme = 0, 
+           main = "ERN Peak Latency Per System", #title of the graph
+           par(cex.main = 1.2), #set the size of your title
+           xlab="EEG System", #label of the x axis
+           ylab="ERN Peak Time in ms", #label of the y axis
+           cex.lab = 1.2, #size of the axis labels
+           pal = "basel", 
+           inf.method = 'iqr', # IQR box
+           avg.line.fun = median,
+           bean.f.o = 0.5, # Bean fill darkness
+           point.o = .3, # points darkness
+           inf.f.o = .5, # Inference fill
+           inf.b.o = .5, # Inference border
+           avg.line.o = 0.7, # Average line darkness
+           inf.f.col = "white", # Inf fill col
+           inf.b.col = "black", # Inf border col
+           avg.line.col = "black", # avg line col
+           point.pch = 20, #point shape
+           point.col = "black", #point colour
+           point.cex = 1, #point size
+           gl.col = "#FFCCFF", #gridlines and colour
+           yaxt ="n", # remove the automatic scale on the axis Y
+           quant = c(.05, .95) #set the quantile, here within 5% on each side to indicate outliers
+           )
+#here are some additional commands that add onto the plot
+axis(2, at = seq(-26, 71, by = 10)) #set the numbers on the y axis
+
+```  
+  
+The results are non-significant. 
+Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
+
+**Median EasyCap =** `r ERN_lat_median_e`(`r ERN_lat_iqr_e`)  
+  
+**Median Mobita =** `r ERN_lat_median_m`(`r ERN_lat_iqr_m`)  
+
+**Wilcoxon:** V = `r ERN_lat_wil$statistic`, p = `r ERN_lat_wil$p.value`, Bonferroni p = `r ERN_lat_wil$p.value*14`, r = `r ERN_lat_es$effsize` (`r ERN_lat_es$magnitude`)  
+  
+**Fligner-Killeen:** X^2^ = `r ERN_lat_flig$statistic`, p = `r ERN_lat_flig$p.value`, Bonferroni p = `r ERN_lat_flig$p.value*14`
+  
+******  
+
+
+**Peak Amplitude**  
+  
+- Pirate Plot 
+- Median (IQR) for Easy Cap 
+- Median (IQR) for Mobita 
+- Wilcoxon test results 
+- Fligner-Killeen test  
+  
+```{r ERN amplitude, eval=TRUE, echo=FALSE,  warning=FALSE}
+#the peaks are extracted from the difference wave already
+df_ERN_peak <- read.csv('ERN_peak.csv')
+
+#Median for the peak latency EasyCap
+ERN_amp_median_e <- median(df_ERN_peak$Amp_E)
+ERN_amp_iqr_e <- IQR(df_ERN_peak$Amp_E)
+
+#Median for the peak latency Mobita
+ERN_amp_median_m <- median(df_ERN_peak$Amp_M)
+ERN_amp_iqr_m <- IQR(df_ERN_peak$Amp_M)
+
+#Wilcoxon test
+ERN_amp_wil <- wilcox.test(df_ERN_peak$Amp_E, df_ERN_peak$Amp_M, paired=TRUE)  
+
+#New data structure for plotting and further tests
+ERN_peak_amp <- df_ERN_peak$Amp_E
+ERN_peak_amp[10:18] <- df_ERN_peak$Amp_M 
+group_ERN <- 1:18
+group_ERN[1:9] <- 1
+group_ERN[10:18] <- 2
+df_ERN_peak_amp_plot <- as.data.frame(cbind(ERN_peak_amp, group_ERN))
+df_ERN_peak_amp_plot$group_ERN <- as.factor(df_ERN_peak_amp_plot$group_ERN)
+
+#Test of variance
+ERN_amp_flig <- fligner.test(ERN_peak_amp ~ group_ERN, data = df_ERN_peak_amp_plot)
+
+#Wilcoxon effect size
+ERN_amp_es <- wilcox_effsize(df_ERN_peak_amp_plot, ERN_peak_amp ~ group_ERN, paired=TRUE)
+
+#Individual data plot
+pirateplot(formula = ERN_peak_amp~group_ERN, #which variables are you using
+           data = df_ERN_peak_amp_plot,
+           theme = 0, 
+           main = "ERN Peak Amplitude Per System", #title of the graph
+           par(cex.main = 1.2), #set the size of your title
+           xlab="EEG System", #label of the x axis
+           ylab="ERN Peak Amplitude in micro Volts", #label of the y axis
+           cex.lab = 1.2, #size of the axis labels
+           pal = "basel", 
+           inf.method = 'iqr', # IQR box
+           avg.line.fun = median,
+           bean.f.o = 0.5, # Bean fill darkness
+           point.o = .3, # points darkness
+           inf.f.o = .5, # Inference fill
+           inf.b.o = .5, # Inference border
+           avg.line.o = 0.7, # Average line darkness
+           inf.f.col = "white", # Inf fill col
+           inf.b.col = "black", # Inf border col
+           avg.line.col = "black", # avg line col
+           point.pch = 20, #point shape
+           point.col = "black", #point colour
+           point.cex = 1, #point size
+           gl.col = "#FFCCFF", #gridlines and colour
+           yaxt ="n", # remove the automatic scale on the axis Y
+           quant = c(.05, .95) #set the quantile, here within 5% on each side to indicate outliers
+           )
+#here are some additional commands that add onto the plot
+axis(2, at = seq(-16, 3, by = 3)) #set the numbers on the y axis
+
+```  
+ 
+The results are non-significant. 
+Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
+
+**Median EasyCap =** `r ERN_amp_median_e`(`r ERN_amp_iqr_e`)  
+  
+**Median Mobita =** `r ERN_amp_median_m`(`r ERN_amp_iqr_m`)  
+
+**Wilcoxon:** V = `r ERN_amp_wil$statistic`, p = `r ERN_amp_wil$p.value`, Bonferroni p = `r ERN_amp_wil$p.value*14`, r = `r ERN_amp_es$effsize` (`r ERN_amp_es$magnitude`)  
+  
+**Fligner-Killeen:** X^2^ = `r ERN_amp_flig$statistic`, p = `r ERN_amp_flig$p.value`, Bonferroni p = `r ERN_amp_flig$p.value*14`
+  
+
+**ERN Plots**  
+  
+![Plots](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\EasyCap_Mobita_Report\ERN.jpg)
+
+****** 
+
 ## **Investigating why the P300 is shifed frontally**    
   
 **EasyCap and Mobita P300 activity at Fz and Pz**  
@@ -1606,10 +1935,9 @@ EasyCap is in black and Mobita is in red.
   
 Here the activity looks stronger for Fz in Mobita in comparison to Fz in EasyCap and in comparison to Mobita activity at Pz.  
   
-I have checked referencing and it seems that the references are the same. The only difference is that in EasyCap, the mastoid electrodes that were implicitly recorded are included in the mean whereas in Mobita I did not include the masoid electodes for the mean calculation (as I thought they would not be included in EasyCap).  
   
 **SNR distribution across different areas of electrodes**  
-#The electrodes will be divided into 3 areas and the mean SNR values for those areas will be compared using the Wilcoxon and Fligner-Killeen tests.  
+The electrodes will be divided into 3 areas and the mean SNR values for those areas will be compared using the Wilcoxon and Fligner-Killeen tests.  
   
 Frontal: Fp1, F2p, F7, F3, Fz, F4, F8,   
 Central: FC5, FC1, FC2, FC6, C3, Cz, C4, CP5, CP1, CP2, CP6  
@@ -1669,7 +1997,7 @@ df_SNR_areas <- as.data.frame(cbind(SNR_areas, area, group_SNR))
 df_SNR_areas$SNR_areas <- as.numeric((df_SNR_areas$SNR_areas))
 
  
-
+#individual data plot for all three electrode regions
 pirateplot(formula = SNR_areas ~ area + group_SNR, #which variables are you using
            data = df_SNR_areas,
            theme = 0, 
@@ -1723,385 +2051,36 @@ df_SNR_posterior$group <- group
 SNR_frontal_flig <- fligner.test(mean_frontal ~ group, data = df_SNR_frontal)
 SNR_central_flig <- fligner.test(mean_central ~ group, data = df_SNR_central)
 SNR_posterior_flig <- fligner.test(mean_posterior ~ group, data = df_SNR_posterior)
+
+#Calculate Wilcoxon effect sizes using the data sructures prepared for Fligner
+SNR_frontal_es <- wilcox_effsize(df_SNR_frontal, mean_frontal ~ group, paired=TRUE)
+SNR_central_es <- wilcox_effsize(df_SNR_central, mean_central ~ group, paired=TRUE)
+SNR_posterior_es <- wilcox_effsize(df_SNR_posterior, mean_posterior ~ group, paired=TRUE)
+
 ```
 
 The results from Wilcoxon test are significant for the posterior electrodes. All other tests are non-significant.  
-Because there are 4 other tests looking at noise in the data, p-value will be multiplied by 10.  
+Because there are 4 other tests looking at noise in the data, p-value are be multiplied by 10.  
 Bonferroni correction x10.  
-  
+
 **Frontal electrodes**  
-Wilcoxon: `r SNR_frontal_wil$statistic`, p-value = `r SNR_frontal_wil$p.value`, Bonferroni p-value: `r SNR_frontal_wil$p.value*10`  
+EasyCap Median(IQR): `r median(SNR_frontal_e)`(`r IQR(SNR_frontal_e)`)  
+Mobita Median(IQR): `r median(SNR_frontal_m)`(`r IQR(SNR_frontal_m)`)  
+Wilcoxon: `r SNR_frontal_wil$statistic`, p-value = `r SNR_frontal_wil$p.value`, Bonferroni p-value: `r SNR_frontal_wil$p.value*10`, r = `r SNR_frontal_es$effsize` (`r SNR_frontal_es$magnitude`)  
 Fligner-Killeen: `r SNR_frontal_flig$statistic`, p-value = `r SNR_frontal_flig$p.value`, Bonferroni p-value: `r SNR_frontal_flig$p.value*10`  
   
 **Central electrodes**  
-Wilcoxon: `r SNR_central_wil$statistic`, p-value = `r SNR_central_wil$p.value`, Bonferroni p-value: `r SNR_central_wil$p.value*10`  
+EasyCap Median(IQR): `r median(SNR_central_e)`(`r IQR(SNR_central_e)`)  
+Mobita Median (IQR): `r median(SNR_central_m)`(`r IQR(SNR_central_m)`)  
+Wilcoxon: `r SNR_central_wil$statistic`, p-value = `r SNR_central_wil$p.value`, Bonferroni p-value: `r SNR_central_wil$p.value*10`, r = `r SNR_central_es$effsize` (`r SNR_central_es$magnitude`)  
 Fligner-Killeen: `r SNR_central_flig$statistic`, p-value = `r SNR_central_flig$p.value`, Bonferroni p-value: `r SNR_central_flig$p.value*10`  
 
 **Posterior electrodes**  
-Wilcoxon: `r SNR_posterior_wil$statistic`, p-value = `r SNR_posterior_wil$p.value`, Bonferroni p-value: `r SNR_posterior_wil$p.value*10`  
+EasyCap Median (IQR): `r median(SNR_posterior_e)`(`r IQR(SNR_posterior_e)`)  
+Mobita Median (IQR): `r median(SNR_posterior_m)`(`r IQR(SNR_posterior_m)`)  
+Wilcoxon: `r SNR_posterior_wil$statistic`, p-value = `r SNR_posterior_wil$p.value`, Bonferroni p-value: `r SNR_posterior_wil$p.value*10`, r = `r SNR_posterior_es$effsize` (`r SNR_posterior_es$magnitude`)  
 Fligner-Killeen: `r SNR_posterior_flig$statistic`, p-value = `r SNR_posterior_flig$p.value`, Bonferroni p-value: `r SNR_posterior_flig$p.value*10`  
   
   
   
-## **ERN**  
-  
-**Mean Amplitude** 
-
-- Correlation Plot 
-- Pirate Plot 
-- Median for Easy Cap 
-- Median for Mobita 
-- Correlation Test 
-- Wilcoxon test results 
-  
-
-```{r ERN, eval=TRUE, echo=FALSE,  warning=FALSE, message=FALSE}
-
-df_ERN <- read.csv('ERN.csv')
-#remove participant 4 as they only had 5 trials available for comparison
-df_ERN <- df_ERN[-4,]
-
-#create difference waves 
-# EasyCap
-df_ERN <- mutate(df_ERN, dif_E = Err_Cz_E - Corr_Cz_E)
-#Mobita
-df_ERN <- mutate(df_ERN, dif_M = Err_Cz_M - Corr_Cz_M)
-
-#Median for the difference wave EasyCap
-ERN_median_e <- median(df_ERN$dif_E)
-#Median for the difference wave Mobita
-ERN_median_m <- median(df_ERN$dif_M)
-
-#Spearman Correlation
-ERN_cor <- cor.test(df_ERN$dif_E, df_ERN$dif_M, method="spearman")
-
-#Correlation plot
-ggplot(df_ERN, aes(x=dif_E, y=dif_M))+ 
-  geom_point()+
-  geom_smooth(method=lm, fullrange=TRUE)+
-  theme_classic()
-
-
-#Wilcoxon test
-ERN_wil <- wilcox.test(df_ERN$dif_E, df_ERN$dif_M, paired=TRUE)  
-
-ERN <- df_ERN$dif_E
-ERN[10:18] <- df_ERN$dif_M 
-group <- 1:18
-group[1:9] <- 1
-group[10:18] <- 2
-df_ERN_plot <- as.data.frame(cbind(ERN, group))
-df_ERN_plot$group <- as.factor(df_ERN_plot$group)
-
-ERN_flig <- fligner.test(ERN ~ group, data = df_ERN_plot)
-
-pirateplot(formula = ERN~group, #which variables are you using
-           data = df_ERN_plot,
-           theme = 0, 
-           main = "ERN Mean Amplitude Per System", #title of the graph
-           par(cex.main = 1.2), #set the size of your title
-           xlab="EEG System", #label of the x axis
-           ylab="ERN Mean Amplitude in Micro Volts", #label of the y axis
-           cex.lab = 1.2, #size of the axis labels
-           pal = "basel", 
-           inf.method = 'iqr', # IQR box
-           avg.line.fun = median,
-           bean.f.o = 0.5, # Bean fill darkness
-           point.o = .3, # points darkness
-           inf.f.o = .5, # Inference fill
-           inf.b.o = .5, # Inference border
-           avg.line.o = 0.7, # Average line darkness
-           inf.f.col = "white", # Inf fill col
-           inf.b.col = "black", # Inf border col
-           avg.line.col = "black", # avg line col
-           point.pch = 20, #point shape
-           point.col = "black", #point colour
-           point.cex = 1, #point size
-           gl.col = "#FFCCFF", #gridlines and colour
-           yaxt ="n", # remove the automatic scale on the axis Y
-           quant = c(.05, .95) #set the quantile, here within 5% on each side to indicate outliers
-           )
-#here are some additional commands that add onto the plot
-axis(2, at = seq(-1.5, 6.5, by = 1)) #set the numbers on the y axis
-
-```
-
-The results are non-significant. 
-Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
-
-**Median EasyCap =** `r ERN_median_e`     
-  
-**Median Mobita =** `r ERN_median_m`  
-
-**Wilcoxon:** V = `r ERN_wil$statistic`, p = `r ERN_wil$p.value`, Bonferroni p = `r ERN_wil$p.value*14`  
-  
-**Fligner-Killeen:** X^2^ = `r ERN_flig$statistic`, p = `r ERN_flig$p.value`, Bonferroni p = `r ERN_flig$p.value*14`
-  
-******  
-  
-  
-**Peak Latency**  
-
-- Pirate Plot 
-- Median for Easy Cap 
-- Median for Mobita 
-- Wilcoxon test results 
-  
-
-```{r ERN latency, eval=TRUE, echo=FALSE,  warning=FALSE}
-#the peaks a re extracted from the difference wave already
-df_ERN_peak <- read.csv('ERN_peak.csv')
-
-
-#Median for the peak latency EasyCap
-ERN_lat_median_e <- median(df_ERN_peak$Time_E)
-#Median for the peak latency Mobita
-ERN_lat_median_m <- median(df_ERN_peak$Time_M)
-
-#Wilcoxon test
-ERN_lat_wil <- wilcox.test(df_ERN_peak$Time_E, df_ERN_peak$Time_M, paired=TRUE)  
-
-ERN_peak <- df_ERN_peak$Time_E
-ERN_peak[10:18] <- df_ERN_peak$Time_M 
-group <- 1:18
-group[1:9] <- 1
-group[10:18] <- 2
-df_ERN_peak_plot <- as.data.frame(cbind(ERN_peak, group))
-df_ERN_peak_plot$group <- as.factor(df_ERN_peak_plot$group)
-
-ERN_lat_flig <- fligner.test(ERN_peak ~ group, data = df_ERN_peak_plot)
-
-pirateplot(formula = ERN_peak~group, #which variables are you using
-           data = df_ERN_peak_plot,
-           theme = 0, 
-           main = "ERN Peak Latency Per System", #title of the graph
-           par(cex.main = 1.2), #set the size of your title
-           xlab="EEG System", #label of the x axis
-           ylab="ERN Peak Time in ms", #label of the y axis
-           cex.lab = 1.2, #size of the axis labels
-           pal = "basel", 
-           inf.method = 'iqr', # IQR box
-           avg.line.fun = median,
-           bean.f.o = 0.5, # Bean fill darkness
-           point.o = .3, # points darkness
-           inf.f.o = .5, # Inference fill
-           inf.b.o = .5, # Inference border
-           avg.line.o = 0.7, # Average line darkness
-           inf.f.col = "white", # Inf fill col
-           inf.b.col = "black", # Inf border col
-           avg.line.col = "black", # avg line col
-           point.pch = 20, #point shape
-           point.col = "black", #point colour
-           point.cex = 1, #point size
-           gl.col = "#FFCCFF", #gridlines and colour
-           yaxt ="n", # remove the automatic scale on the axis Y
-           quant = c(.05, .95) #set the quantile, here within 5% on each side to indicate outliers
-           )
-#here are some additional commands that add onto the plot
-axis(2, at = seq(-26, 71, by = 10)) #set the numbers on the y axis
-
-```  
-  
-The results are non-significant. 
-Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
-
-**Median EasyCap =** `r ERN_lat_median_e`     
-  
-**Median Mobita =** `r ERN_lat_median_m`  
-
-**Wilcoxon:** V = `r ERN_lat_wil$statistic`, p = `r ERN_lat_wil$p.value`, Bonferroni p = `r ERN_lat_wil$p.value*14`  
-  
-**Fligner-Killeen:** X^2^ = `r ERN_lat_flig$statistic`, p = `r ERN_lat_flig$p.value`, Bonferroni p = `r ERN_lat_flig$p.value*14`
-  
-******  
-
-
-**Peak Amplitude**  
-  
-- Pirate Plot 
-- Median for Easy Cap 
-- Median for Mobita 
-- Wilcoxon test results 
-  
-```{r ERN amplitude, eval=TRUE, echo=FALSE,  warning=FALSE}
-#the peaks a re extracted from the difference wave already
-df_ERN_peak <- read.csv('ERN_peak.csv')
-
-
-#Median for the peak latency EasyCap
-ERN_amp_median_e <- median(df_ERN_peak$Amp_E)
-#Median for the peak latency Mobita
-ERN_amp_median_m <- median(df_ERN_peak$Amp_M)
-
-#Wilcoxon test
-ERN_amp_wil <- wilcox.test(df_ERN_peak$Amp_E, df_ERN_peak$Amp_M, paired=TRUE)  
-
-
-ERN_peak_amp <- df_ERN_peak$Amp_E
-ERN_peak_amp[10:18] <- df_ERN_peak$Amp_M 
-group <- 1:18
-group[1:9] <- 1
-group[9:18] <- 2
-df_ERN_peak_amp_plot <- as.data.frame(cbind(ERN_peak_amp, group))
-df_ERN_peak_amp_plot$group <- as.factor(df_ERN_peak_amp_plot$group)
-
-ERN_amp_flig <- fligner.test(ERN_peak_amp ~ group, data = df_ERN_peak_amp_plot)
-
-pirateplot(formula = ERN_peak_amp~group, #which variables are you using
-           data = df_ERN_peak_amp_plot,
-           theme = 0, 
-           main = "ERN Peak Amplitude Per System", #title of the graph
-           par(cex.main = 1.2), #set the size of your title
-           xlab="EEG System", #label of the x axis
-           ylab="ERN Peak Amplitude in micro Volts", #label of the y axis
-           cex.lab = 1.2, #size of the axis labels
-           pal = "basel", 
-           inf.method = 'iqr', # IQR box
-           avg.line.fun = median,
-           bean.f.o = 0.5, # Bean fill darkness
-           point.o = .3, # points darkness
-           inf.f.o = .5, # Inference fill
-           inf.b.o = .5, # Inference border
-           avg.line.o = 0.7, # Average line darkness
-           inf.f.col = "white", # Inf fill col
-           inf.b.col = "black", # Inf border col
-           avg.line.col = "black", # avg line col
-           point.pch = 20, #point shape
-           point.col = "black", #point colour
-           point.cex = 1, #point size
-           gl.col = "#FFCCFF", #gridlines and colour
-           yaxt ="n", # remove the automatic scale on the axis Y
-           quant = c(.05, .95) #set the quantile, here within 5% on each side to indicate outliers
-           )
-#here are some additional commands that add onto the plot
-axis(2, at = seq(-16, 3, by = 3)) #set the numbers on the y axis
-
-```  
- 
-The results are non-significant. 
-Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
-
-**Median EasyCap =** `r ERN_amp_median_e`     
-  
-**Median Mobita =** `r ERN_amp_median_m`  
-
-**Wilcoxon:** V = `r ERN_amp_wil$statistic`, p = `r ERN_amp_wil$p.value`, Bonferroni p = `r ERN_amp_wil$p.value*14`  
-  
-**Fligner-Killeen:** X^2^ = `r ERN_amp_flig$statistic`, p = `r ERN_amp_flig$p.value`, Bonferroni p = `r ERN_amp_flig$p.value*14`
-  
-******  
-    
-  
-  
-# 
-# Exploratory analysis - ERN shifted  
-  
-Is it the case that the difference disappears once the mean amplitude window is moved back?  
-  
-```{r ERN shift, eval=TRUE, echo=FALSE,  warning=FALSE}
-
-df_ERN_shift <- read.csv('ERN_M_shift.csv')  
-#fetch the EasyCap data that was already used earlier 
-df_ERN_easycap <- read.csv('ERN.csv')
-df_ERN_easycap <- df_ERN_easycap[,c(2:3,5)]  
-
-#merge these data frames
-df_ERN_shift <- merge(df_ERN_shift, df_ERN_easycap, by="Mobita")
-
-#remove participant 9 as they only had 5 trials available for comparison 9it was 4 before but the merge() function reaordered it)
-df_ERN_shift <- df_ERN_shift[-9,]
-
-#create difference waves 
-# EasyCap
-df_ERN_shift <- mutate(df_ERN_shift, dif_E = Err_Cz_E - Corr_Cz_E)
-#Mobita
-df_ERN_shift <- mutate(df_ERN_shift, dif_M = Err_Cz_M_shift - Corr_Cz_M_shift)
-
-#Median for the difference wave EasyCap
-median(df_ERN_shift$dif_E)
-#Median for the difference wave Mobita
-median(df_ERN_shift$dif_M)
-
-
-#Wilcoxon test
-wilcox.test(df_ERN_shift$dif_E, df_ERN_shift$dif_M, paired=TRUE)  
-
-ERN_shift <- df_ERN_shift$dif_E
-ERN_shift[10:18] <- df_ERN_shift$dif_M 
-group <- 1:20
-group[1:10] <- 1
-group[11:20] <- 2
-df_ERN_shift_plot <- as.data.frame(cbind(ERN_shift, group))
-df_ERN_shift_plot$group <- as.factor(df_ERN_shift_plot$group)
-
-pirateplot(formula = ERN_shift~group, #which variables are you using
-           data = df_ERN_shift_plot,
-           theme = 0, 
-           main = "ERN Mean Amplitude Per System (shifted)", #title of the graph
-           par(cex.main = 1.2), #set the size of your title
-           xlab="EEG System", #label of the x axis
-           ylab="ERN Mean Amplitude in Micro Volts", #label of the y axis
-           cex.lab = 1.2, #size of the axis labels
-           pal = "basel", 
-           inf.method = 'iqr', # IQR box
-           avg.line.fun = median,
-           bean.f.o = 0.5, # Bean fill darkness
-           point.o = .3, # points darkness
-           inf.f.o = .5, # Inference fill
-           inf.b.o = .5, # Inference border
-           avg.line.o = 0.7, # Average line darkness
-           inf.f.col = "white", # Inf fill col
-           inf.b.col = "black", # Inf border col
-           avg.line.col = "black", # avg line col
-           point.pch = 20, #point shape
-           point.col = "black", #point colour
-           point.cex = 1, #point size
-           gl.col = "#FFCCFF", #gridlines and colour
-           yaxt ="n", # remove the automatic scale on the axis Y
-           quant = c(.05, .95) #set the quantile, here within 5% on each side to indicate outliers
-           )
-#here are some additional commands that add onto the plot
-axis(2, at = seq(-12, 5, by = 4)) #set the numbers on the y axis
-
-```
-  
-The differences in distribution disappear and the test can no longer provide evidence that there is a difference between the mean ERN amplitudes of both systems.
-  
-  
-**ERN Plots**  
-  
-![Plots](C:\Users\marta\OneDrive - University of Surrey\Documents\All working docs\PhD\Tech Report\EasyCap_Mobita_Report\ERN.jpg)
-
-
-
-
-
-
-## **Rejected ICA components**    
-Firstly, it will be calculated whether there is a significant difference between the number of trials rejected for each system.  
-  
--  Median for Easy Cap  
--  Median for Mobita  
--  Wilcoxon test results  
-  
-```{r ICA comp prep, eval=TRUE, echo=FALSE,  warning=FALSE}
-
-# Put the means of both systems in one data frame to be used for plots
-rej_comp <- df_preproc$E_Rej_Comp
-rej_comp[11:20] <- df_preproc$M_Rej_Comp 
-group <- 1:20
-group[1:10] <- 1
-group[11:20] <- 2
-df_rej_comp <- as.data.frame(cbind(rej_comp, group))
-df_rej_comp$group <- as.factor(df_rej_comp$group)
-
-
-
-median(df_preproc$E_Rej_Comp)
-median(df_preproc$M_Rej_Comp)
-
-wilcox.test(df_preproc$E_Rej_Comp, df_preproc$M_Rej_Comp,paired=TRUE)
-``` 
-  
-
 
