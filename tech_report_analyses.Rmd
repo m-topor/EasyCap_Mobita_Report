@@ -4,7 +4,7 @@ author: "Marta Topor"
 date: "15/04/2021"
 output: word_document
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 
@@ -767,7 +767,7 @@ df_theta <- read.csv("FFT_range_theta_all.csv")
 
 **1. Electrode matching**  
 
-Select the electrodes that were identified to have strongest activity for theta band and which are overlapping between the two systems.   
+Select the electrodes that were identified to have strongest activity for theta band and which are overlapping between the two systems. (most positive activity)  
 Select from a subset of the following electrodes only:  
 F3, Fz, F4, FC5, FC1, FC2, FC6, C3, Cz, C4, CP5, CP1, CP2, CP6, P3, Pz, P4  
 The above subset excludes electrodes located on the edges of the cap which are prone to noise and extreme values.  
@@ -899,7 +899,7 @@ Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.
   
 **Median Mobita =** `r theta_median_m`(`r theta_iqr_m`)  
   
-**Correlation:** r = `r theta_cor$estimate`, p = `r theta_cor$p.value`, Bonferroni p = `r theta_cor$p.value*12`  
+**Correlation:** τ = `r theta_cor$estimate`, p = `r theta_cor$p.value`, Bonferroni p = `r theta_cor$p.value*12`  
   
 **Wilcoxon:** V = `r theta_wil$statistic`, p = `r theta_wil$p.value`, Bonferroni p = `r theta_wil$p.value*12`, r = `r theta_es$effsize` (`r theta_es$magnitude`)  
   
@@ -917,7 +917,7 @@ df_alpha <- read.csv("FFT_range_alpha_all.csv")
 
 **Electrode matching**  
 
-Select the electrodes that were identified to have strongest activity for theta band and which are overlapping between the two systems.   
+Select the electrodes that were identified to have strongest activity for theta band and which are overlapping between the two systems. (most positive activity)  
 Select from a subset of the following elecrodes only:  
 F3, Fz, F4, FC5, FC1, FC2, FC6, C3, Cz, C4, CP5, CP1, CP2, CP6, P3, Pz, P4  
 The above subset excludes electrodes located on the edges of the cap which are prone to noise and extreme values.  
@@ -1050,7 +1050,7 @@ Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.
   
 **Median Mobita =** `r alpha_median_m`(`r alpha_iqr_m`) 
 
-**Correlation:** r = `r alpha_cor$estimate`, p = `r alpha_cor$p.value`, Bonferroni p = `r alpha_cor$p.value*12`  
+**Correlation:** τ = `r alpha_cor$estimate`, p = `r alpha_cor$p.value`, Bonferroni p = `r alpha_cor$p.value*12`  
   
 **Wilcoxon:** V = `r alpha_wil$statistic`, p = `r alpha_wil$p.value`, Bonferroni p = `r alpha_wil$p.value*12`, r = `r alpha_es$effsize` (`r alpha_es$magnitude`)  
   
@@ -1069,17 +1069,17 @@ df_lbeta <- read.csv("FFT_range_low_beta_all.csv")
 
 **1. Electrode matching**  
 
-Select the electrodes that were identified to have strongest activity for theta band and which are overlapping between the two systems.   
+Select the electrodes that were identified to have strongest activity for theta band and which are overlapping between the two systems. (least positive activity)  
 Select from a subset the following elecrodes only:  
 F3, Fz, F4, FC5, FC1, FC2, FC6, C3, Cz, C4, CP5, CP1, CP2, CP6, P3, Pz, P4  
 The above subset excludes electrodes located on the edges of the cap which are prone to noise and extreme values.  
   
-Overlapping electrodes: F4  
+Overlapping electrodes: CP1, CP2, Pz  
 
 ```{r matched electrodes lbeta, eval=TRUE, echo=FALSE}
 #select data for overlapping electrodes
 df_lbeta_matched <- df_lbeta
-df_lbeta_matched <- select(df_lbeta, starts_with("F4"))
+df_lbeta_matched <- select(df_lbeta, starts_with(c("CP1", "CP2", "Pz")))
 
 ```
 
@@ -1200,7 +1200,7 @@ Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.
   
 **Median Mobita =** `r lbeta_median_m`(`r lbeta_iqr_m`)  
 
-**Correlation:** r = `r lbeta_cor$estimate`, p = `r lbeta_cor$p.value`, Bonferroni p = `r lbeta_cor$p.value*12`  
+**Correlation:** τ = `r lbeta_cor$estimate`, p = `r lbeta_cor$p.value`, Bonferroni p = `r lbeta_cor$p.value*12`  
   
 **Wilcoxon:** V = `r lbeta_wil$statistic`, p = `r lbeta_wil$p.value`, Bonferroni p = `r lbeta_wil$p.value*12`, r = `r lbeta_es$effsize` (`r lbeta_es$magnitude`)   
   
@@ -1219,7 +1219,7 @@ df_hbeta <- read.csv("FFT_range_high_beta_all.csv")
 
 **Electrode matching**  
 
-Select the electrodes that were identified to have strongest activity for theta band and which are overlapping between the two systems.   
+Select the electrodes that were identified to have strongest activity for theta band and which are overlapping between the two systems. (least positive activity)  
 Select from a subset of the following electrodes only:  
 F3, Fz, F4, FC5, FC1, FC2, FC6, C3, Cz, C4, CP5, CP1, CP2, CP6, P3, Pz, P4  
 The above subset excludes electrodes located on the edges of the cap which are prone to noise and extreme values.  
@@ -1349,7 +1349,7 @@ Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.
   
 **Median Mobita =** `r hbeta_median_m`(`r hbeta_iqr_m`)  
 
-**Correlation:** r = `r hbeta_cor$estimate`, p = `r hbeta_cor$p.value`, Bonferroni p = `r hbeta_cor$p.value*12`  
+**Correlation:** τ = `r hbeta_cor$estimate`, p = `r hbeta_cor$p.value`, Bonferroni p = `r hbeta_cor$p.value*12`  
   
 **Wilcoxon:** V = `r hbeta_wil$statistic`, p = `r hbeta_wil$p.value`, Bonferroni p = `r hbeta_wil$p.value*12`, r = `r hbeta_es$effsize` (`r hbeta_es$magnitude`)  
   
@@ -1457,7 +1457,7 @@ Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for eac
   
 **Median Mobita =** `r P300_median_m`(`r P300_iqr_m`)  
 
-**Correlation:** r = `r P300_cor$estimate`, p = `r P300_cor$p.value`, Bonferroni p = `r P300_cor$p.value*14`  
+**Correlation:** τ = `r P300_cor$estimate`, p = `r P300_cor$p.value`, Bonferroni p = `r P300_cor$p.value*14`  
   
 **Wilcoxon:** V = `r P300_wil$statistic`, p = `r P300_wil$p.value`, Bonferroni p = `r P300_wil$p.value*14`, r = `r P300_es$effsize` (`r P300_es$magnitude`)   
   
@@ -1743,7 +1743,7 @@ Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for eac
   
 **Median Mobita =** `r ERN_median_m`(`r ERN_iqr_m`)  
   
-**Correlation:** r = `r ERN_cor$estimate`, p = `r ERN_cor$p.value`, Bonferroni p = `r ERN_cor$p.value*14` 
+**Correlation:** τ = `r ERN_cor$estimate`, p = `r ERN_cor$p.value`, Bonferroni p = `r ERN_cor$p.value*14` 
 
 **Wilcoxon:** V = `r ERN_wil$statistic`, p = `r ERN_wil$p.value`, Bonferroni p = `r ERN_wil$p.value*14`, r = `r ERN_es$effsize` (`r ERN_es$magnitude`)  
   
