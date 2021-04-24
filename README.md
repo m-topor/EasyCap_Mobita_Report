@@ -1,4 +1,5 @@
-# EasyCap_Mobita_Report (Paper title)   
+# EasyCap_Mobita_Report
+# In search for the most optimal EEG method: A practical evaluation of a water-based electrode EEG system.  
   
 ### What does this repository contain?  
 This repository is directly related to a research report titled **"xxxxxxxxxxxxxxxxxxxx"**   
