@@ -2,7 +2,10 @@
 # In search for the most optimal EEG method: A practical evaluation of a water-based electrode EEG system.  
   
 ### What does this repository contain?  
-This repository is directly related to a research report titled **"In search for the most optimal EEG method: A practical evaluation of a water-based electrode EEG system.  "**   
+This repository is directly related to a research report titled **"In search for the most optimal EEG method: A practical evaluation of a water-based electrode EEG system.  "**.  
+Data and supplementary materials can be accessed at: https://osf.io/kubv5/  
+The preprint can be accessed at: https://doi.org/10.1101/2021.04.28.441825   
+  
 This repository contains files with processed EEG data extracted for statistical comparisons and visualisation.  
 The code for all analyses included in the report is also provided within the repository in the format of R Markdown. The resulting lab book with all outputs in a Word Document isa also included.  
 Figures that are included in the repository are those that were extracted from BrainVision Analyzer and also used in the research report.  
