@@ -1,7 +1,7 @@
 ---
 title: "Technical Report Analyses"
 author: "Marta Topor"
-date: "15/04/2021"
+date: "12/09/2021"
 output: word_document
 editor_options: 
   chunk_output_type: inline
@@ -10,13 +10,13 @@ editor_options:
 
 ```{r WD, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 # Set-up the workspace and load the data
-setwd("~/All working docs/PhD/Tech Report/EasyCap_Mobita_Report")
+setwd("C:/Users/marta/OneDrive - University of Surrey/Documents/All working docs/PhD/Tech Report/EasyCap_Mobita_Report")
 library(tidyverse)
 library(yarrr)
 library(rstatix)
 library(coin)
 library(wmwpow)
-
+library(jmv)
 ```
 
 
@@ -61,6 +61,7 @@ df_means_low$group <- as.factor(df_means_low$group)
 - Median (IQR) for EasyCap 
 - Median (IQR) for Mobita 
 - Wilcoxon test result 
+- Bayes Factor  
 - Fligner-Killeen test for homogeneity of variance 
   
 ```{r low freq results, eval=TRUE, echo=FALSE, message=FALSE, message=FALSE} 
@@ -75,6 +76,16 @@ raw_low_iqr_m <- IQR(M_chans_low_log$mean_M)
 raw_low_wil <- wilcox.test(E_chans_low_log$mean_E, M_chans_low_log$mean_M,paired=TRUE)
 #Wilcoxon effect size using the plot data structure
 raw_low_es <- wilcox_effsize(df_means_low, all_chans_low ~ group, paired=TRUE)
+  
+#BF calculation on the Wilcoxon
+BF_means_low <- as.data.frame(cbind(E_chans_low_log$mean_E, M_chans_low_log$mean_M))
+BF_raw_low <- jmv::ttestPS(BF_means_low, pairs = list(
+                    list(i1 = "V1", i2 = "V2")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
+       
 
 #Test of homogeneity of variances
 raw_low_flig <- fligner.test(all_chans_low ~ group, data = df_means_low)
@@ -119,7 +130,12 @@ Bonferroni correction x8 as there are 2 tests for each of the 2 frequency bands 
   
 **Wilcoxon:** V = `r raw_low_wil$statistic`, p = `r raw_low_wil$p.value`, Bonferroni p = `r raw_low_wil$p.value*8`, r = `r raw_low_es$effsize` (`r raw_low_es$magnitude`)    
   
-**Fligner-Killeen:** X^2^ = `r raw_low_flig$statistic`, p = `r raw_low_flig$p.value`, Bonferroni p = `r raw_low_flig$p.value*8`  
+**Fligner-Killeen:** X^2^ = `r raw_low_flig$statistic`, p = `r raw_low_flig$p.value`, Bonferroni p = `r raw_low_flig$p.value*8` 
+  
+**BF** 
+```{r BF_raw_low}
+BF_raw_low$ttest
+```
   
 ******  
   
@@ -162,7 +178,8 @@ df_means_high$group <- as.factor(df_means_high$group)
 - Pirate Plot with IQR and median 
 - Median for EasyCap 
 - Median for Mobita 
-- Wilcoxon test result 
+- Wilcoxon test result
+- Bayes Factor
 - Fligner-Killeen test 
     
 
@@ -178,6 +195,15 @@ raw_high_iqr_m <- IQR(M_chans_high_log$mean_M)
 raw_high_wil <- wilcox.test(E_chans_high_log$mean_E, M_chans_high_log$mean_M,paired=TRUE)
 #use the plot data structure to calculate the Wilcoxon effect size
 raw_high_es <- wilcox_effsize(df_means_high, all_chans_high ~ group, paired=TRUE)
+  
+#BF calculation on the Wilcoxon
+BF_means_high <- as.data.frame(cbind(E_chans_high_log$mean_E, M_chans_high_log$mean_M))
+BF_raw_high <- jmv::ttestPS(BF_means_high, pairs = list(
+                    list(i1 = "V1", i2 = "V2")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
  
 #Test of homogeneity of variances
 raw_high_flig <- fligner.test(all_chans_high ~ group, data = df_means_high)
@@ -224,6 +250,11 @@ Bonferroni correction x8 as there are 2 tests for each of the 2 frequency bands 
   
 **Fligner-Killeen:** X^2^ = `r raw_high_flig$statistic`, p = `r raw_high_flig$p.value`, Bonferroni p = `r raw_high_flig$p.value*8`  
   
+**BF** 
+```{r BF_raw_high}
+BF_raw_high$ttest
+```
+
 ******  
   
   
@@ -279,6 +310,7 @@ df_means_low_c$group <- as.factor(df_means_low_c$group)
 - Median for EasyCap 
 - Median for Mobita 
 - Wilcoxon test result 
+- Bayes Factor  
 - Fligner-Killeen test 
    
   
@@ -294,6 +326,15 @@ range_low_iqr_m <- IQR(M_chans_low_log_c$mean_M)
 range_low_wil <- wilcox.test(E_chans_low_log_c$mean_E, M_chans_low_log_c$mean_M,paired=TRUE)
 #calculate the Wilcoxon effect size using the data structure for plotting
 range_low_es <- wilcox_effsize(df_means_low_c, all_chans_low_c ~ group, paired=TRUE)
+  
+#BF calculation on the Wilcoxon
+BF_means_low_c <- as.data.frame(cbind(E_chans_low_log_c$mean_E, M_chans_low_log_c$mean_M))
+BF_cleaned_low <- jmv::ttestPS(BF_means_low_c, pairs = list(
+                    list(i1 = "V1", i2 = "V2")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #Test of homogeneity of variance 
 range_low_flig <- fligner.test(all_chans_low_c ~ group, data = df_means_low_c)
@@ -340,6 +381,11 @@ Bonferroni correction x8 as there are 2 tests for each of the 2 frequency bands 
 **Wilcoxon:** V = `r range_low_wil$statistic`, p = `r range_low_wil$p.value`, Bonferroni p = `r range_low_wil$p.value*8`, r = `r range_low_es$effsize` (`r range_low_es$magnitude`)  
   
 **Fligner-Killeen:** X^2^ = `r range_low_flig$statistic`, p = `r range_low_flig$p.value`, Bonferroni p = `r range_low_flig$p.value*8`  
+
+**BF**  
+```{r BF_cleaned_low}
+BF_cleaned_low$ttest
+```
   
 ******  
   
@@ -382,6 +428,7 @@ df_means_high_c$group <- as.factor(df_means_high_c$group)
 - Median for EasyCap 
 - Median for Mobita 
 - Wilcoxon test result 
+- Bayes Factor  
 - Fligner-Killeen test 
 
 ```{r high freq results processed, eval=TRUE, echo=FALSE, message=FALSE}
@@ -397,6 +444,14 @@ range_high_wil <- wilcox.test(E_chans_high_log_c$mean_E, M_chans_high_log_c$mean
 # Caluclate the Wilcoxon effect size using the plot data structure
 range_high_es <- wilcox_effsize(df_means_high_c, all_chans_high_c ~ group, paired=TRUE)
 
+#BF calculation on the Wilcoxon
+BF_means_high_c <- as.data.frame(cbind(E_chans_high_log_c$mean_E, M_chans_high_log_c$mean_M))
+BF_cleaned_high <- jmv::ttestPS(BF_means_high_c, pairs = list(
+                    list(i1 = "V1", i2 = "V2")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #Test of homogeneity of variances
 range_high_flig <- fligner.test(all_chans_high_c ~ group, data = df_means_high_c)
@@ -444,6 +499,11 @@ Bonferroni correction x8 as there are 2 tests for each of the 2 frequency bands 
   
 **Fligner-Killeen:** X^2^ = `r range_high_flig$statistic`, p = `r range_high_flig$p.value`, Bonferroni p = `r range_high_flig$p.value*8`  
   
+**BF**  
+```{r BF_cleaned_high}
+BF_cleaned_high$ttest
+```
+
 ******  
   
 
@@ -461,6 +521,7 @@ There were three types of trials extracted for the analyses in this study. Stimu
 - Median (IQR) for Easy Cap 
 - Median (IQR) for Mobita 
 - Wilcoxon test results 
+- Bayes Factor  
 - Fligner-Killeen test 
 
   
@@ -485,6 +546,14 @@ stim_rej_iqr_m <- IQR(df_preproc$M_Stim_Rej_p)
 
 #Wilcoxon test
 stim_rej_wil <- wilcox.test(df_preproc$E_Stim_Rej_p, df_preproc$M_Stim_Rej_p,paired=TRUE)  
+
+#BF calculation on the Wilcoxon
+BF_art_rej <- jmv::ttestPS(df_preproc, pairs = list(
+                    list(i1 = "E_Stim_Rej_p", i2 = "M_Stim_Rej_p")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 
 # Put the rejection rates of both systems in one data frame to be used for plots
@@ -545,6 +614,11 @@ Bonferroni correction x2 as there are 2 tests looking at artefact rejection in t
   
 **Fligner-Killeen:** X^2^ = `r stim_rej_flig$statistic`, p = `r stim_rej_flig$p.value`, Bonferroni p = `r stim_rej_flig$p.value*2`  
   
+**BF**
+```{r BF_art_rej}
+BF_art_rej$ttest
+```
+  
 ******  
   
   
@@ -555,6 +629,7 @@ The SNR was also extracted from stimulus-locked trials. A subset of electrodes w
 - Pirate Plot 
 - Median (IQR) for Easy Cap 
 - Median (IQR) for Mobita 
+- Bayes Factor
 - Wilcoxon test results 
 - Fligner-Killeen test 
   
@@ -608,6 +683,14 @@ SNR_iqr_m <- IQR(df_SNR_final$SNR_mean_M)
 
 #Wilcoxon test
 SNR_wil <- wilcox.test(df_SNR_final$SNR_mean_E, df_SNR_final$SNR_mean_M,paired=TRUE)
+
+#BF calculation on the Wilcoxon
+BF_snr <- jmv::ttestPS(df_SNR_final, pairs = list(
+                    list(i1 = "SNR_mean_E", i2 = "SNR_mean_M")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #Prepare the data to plot
 SNR <- df_SNR_final$SNR_mean_E
@@ -667,6 +750,10 @@ Bonferroni correction x4 as there are 2 tests and 2 measures of noise (SNR & RMS
 **Fligner-Killeen:** X^2^ = `r SNR_flig$statistic`, p = `r SNR_flig$p.value`, Bonferroni p = `r SNR_flig$p.value*4`  
   
   
+**BF**
+```{r BF_snr}
+BF_snr$ttest
+```
   
   
 ## **Root-Mean Square (RMS)**  
@@ -707,6 +794,14 @@ RMS_flig <- fligner.test(RMS ~ group, data = df_RMS_plot)
 
 #calculate the Wilcoxon effect size using the new data frame
 RMS_es <- wilcox_effsize(df_RMS_plot, RMS ~ group, paired=TRUE)
+
+#BF calculation on the Wilcoxon
+BF_rms <- jmv::ttestPS(df_RMS, pairs = list(
+                    list(i1 = "RMS_E_subset", i2 = "RMS_M_subset")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #plot the data 
 pirateplot(formula = RMS~group, #which variables are you using
@@ -750,6 +845,10 @@ Bonferroni correction x4 as there are 2 tests and 2 measures of noise (SNR & RS)
   
 **Fligner-Killeen:** X^2^ = `r RMS_flig$statistic`, p = `r RMS_flig$p.value`, Bonferroni p = `r RMS_flig$p.value*4`  
   
+**BF**
+```{r BF_rms}
+BF_rms$ttest
+```
 
 
 # 
@@ -814,12 +913,12 @@ df_theta_matched$theta_av_M_log <- log(df_theta_matched$theta_av_M)
 
 **2. Results **   
   
-- Kendall Correlation 
 - Pirate Plots 
 - Median (IQR) for EasyCap 
 - Median (IQR) for Mobita 
 - Correlation Plot 
 - Wilcoxon Test 
+- Bayes Factor
 - Fligner-Killeen test  
   
 
@@ -832,9 +931,6 @@ theta_iqr_e <- IQR(df_theta_matched$theta_av_E_log)
 theta_median_m <- median(df_theta_matched$theta_av_M_log)
 theta_iqr_m <- IQR(df_theta_matched$theta_av_M_log)
 
-#Kendall Correlation
-theta_cor <- cor.test(df_theta_matched$theta_av_E_log, df_theta_matched$theta_av_M_log, method="kendall") 
-
 #Scatter plot
 ggplot(df_theta_matched, aes(x=theta_av_E_log, y=theta_av_M_log))+ 
   geom_point()+
@@ -843,6 +939,14 @@ ggplot(df_theta_matched, aes(x=theta_av_E_log, y=theta_av_M_log))+
 
 #Wilcoxon test
 theta_wil <- wilcox.test(df_theta_matched$theta_av_E_log, df_theta_matched$theta_av_M_log, paired=TRUE)  
+
+#BF calculation on the Wilcoxon
+BF_theta <- jmv::ttestPS(df_theta_matched, pairs = list(
+                    list(i1 = "theta_av_E_log", i2 = "theta_av_M_log")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #New data structure for further plotting and tests
 all_theta_av <- df_theta_matched$theta_av_E_log
@@ -893,17 +997,21 @@ axis(2, at = seq(-2, 3, by = 1)) #set the numbers on the y axis
   
   
 There are no statistically significant results in the data.    
-Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.    
+Bonferroni correction x8 as there are 4 frequency bands and 2 tests each.    
     
 **Median EasyCap =** `r theta_median_e`(`r theta_iqr_e`)  
   
 **Median Mobita =** `r theta_median_m`(`r theta_iqr_m`)  
   
-**Correlation:** τ = `r theta_cor$estimate`, p = `r theta_cor$p.value`, Bonferroni p = `r theta_cor$p.value*12`  
+**Wilcoxon:** V = `r theta_wil$statistic`, p = `r theta_wil$p.value`, Bonferroni p = `r theta_wil$p.value*8`, r = `r theta_es$effsize` (`r theta_es$magnitude`)  
   
-**Wilcoxon:** V = `r theta_wil$statistic`, p = `r theta_wil$p.value`, Bonferroni p = `r theta_wil$p.value*12`, r = `r theta_es$effsize` (`r theta_es$magnitude`)  
+**Fligner-Killeen:** X^2^ = `r theta_flig$statistic`, p = `r theta_flig$p.value`, Bonferroni p = `r theta_flig$p.value*8`  
   
-**Fligner-Killeen:** X^2^ = `r theta_flig$statistic`, p = `r theta_flig$p.value`, Bonferroni p = `r theta_flig$p.value*12`  
+**BF**
+```{r BF_theta}
+BF_theta$ttest
+```
+
    
 ******
   
@@ -970,8 +1078,8 @@ df_alpha_matched$alpha_av_M_log <- log(df_alpha_matched$alpha_av_M)
 - Pirate Plots 
 - Median (IQR) for EasyCap 
 - Median (IQR) for Mobita 
-- Kendall Correlation 
 - Wilcoxon Test 
+- Bayes Factor
 - Fligner-Killeen test  
   
   
@@ -984,9 +1092,6 @@ alpha_iqr_e <- IQR(df_alpha_matched$alpha_av_E_log)
 alpha_median_m <- median(df_alpha_matched$alpha_av_M_log)
 alpha_iqr_m <- IQR(df_alpha_matched$alpha_av_M_log)
 
-#Kendall Correlation
-alpha_cor <- cor.test(df_alpha_matched$alpha_av_E_log, df_alpha_matched$alpha_av_M_log, method="kendall")
-
 #Scatter Plot
 ggplot(df_alpha_matched, aes(x=alpha_av_E_log, y=alpha_av_M_log))+ 
   geom_point()+
@@ -995,6 +1100,14 @@ ggplot(df_alpha_matched, aes(x=alpha_av_E_log, y=alpha_av_M_log))+
 
 #Wilcoxon test of difference in central tendency
 alpha_wil <- wilcox.test(df_alpha_matched$alpha_av_E_log, df_alpha_matched$alpha_av_M_log, paired=TRUE)  
+  
+#BF calculation on the Wilcoxon
+BF_alpha <- jmv::ttestPS(df_alpha_matched, pairs = list(
+                    list(i1 = "alpha_av_E_log", i2 = "alpha_av_M_log")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
   
 #New data structure for further plotting and tests
 all_alpha_av <- df_alpha_matched$alpha_av_E_log
@@ -1044,18 +1157,20 @@ axis(2, at = seq(-3, 1, by = 0.5)) #set the numbers on the y axis
 ```
   
 There are no statistically significant results in the data.  
-Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.  
+Bonferroni correction x8 as there are 4 frequency bands and 2 tests each.  
   
 **Median EasyCap =** `r alpha_median_e`(`r alpha_iqr_e`)     
   
 **Median Mobita =** `r alpha_median_m`(`r alpha_iqr_m`) 
 
-**Correlation:** τ = `r alpha_cor$estimate`, p = `r alpha_cor$p.value`, Bonferroni p = `r alpha_cor$p.value*12`  
+**Wilcoxon:** V = `r alpha_wil$statistic`, p = `r alpha_wil$p.value`, Bonferroni p = `r alpha_wil$p.value*8`, r = `r alpha_es$effsize` (`r alpha_es$magnitude`)  
   
-**Wilcoxon:** V = `r alpha_wil$statistic`, p = `r alpha_wil$p.value`, Bonferroni p = `r alpha_wil$p.value*12`, r = `r alpha_es$effsize` (`r alpha_es$magnitude`)  
+**Fligner-Killeen:** X^2^ = `r alpha_flig$statistic`, p = `r alpha_flig$p.value`, Bonferroni p = `r alpha_flig$p.value*8`  
   
-**Fligner-Killeen:** X^2^ = `r alpha_flig$statistic`, p = `r alpha_flig$p.value`, Bonferroni p = `r alpha_flig$p.value*12`  
-  
+**BF**
+```{r BF_alpha}
+BF_alpha$ttest
+```
   
 ******  
 
@@ -1120,8 +1235,8 @@ df_lbeta_matched$lbeta_av_M_log <- log(df_lbeta_matched$lbeta_av_M)
 - Pirate Plots 
 - Median (IQR) for EasyCap 
 - Median (IQR) for Mobita 
-- Kendall Correlation 
 - Wilcoxcon Test 
+- Bayes Factor
 - Fligner-Killeen test  
   
   
@@ -1133,9 +1248,6 @@ lbeta_iqr_e <- IQR(df_lbeta_matched$lbeta_av_E_log)
 
 lbeta_median_m <- median(df_lbeta_matched$lbeta_av_M_log)
 lbeta_iqr_m <- IQR(df_lbeta_matched$lbeta_av_M_log)
-
-#Kendall Correlation
-lbeta_cor <- cor.test(df_lbeta_matched$lbeta_av_E_log, df_lbeta_matched$lbeta_av_M_log, method="kendall")
 
 #Scatter plot
 ggplot(df_lbeta_matched, aes(x=lbeta_av_E_log, y=lbeta_av_M_log))+ 
@@ -1160,6 +1272,14 @@ lbeta_flig <- fligner.test(all_lbeta_av ~ group, data = df_lbeta_av)
 
 #wilcoxon effect size using the new data structure
 lbeta_es <- wilcox_effsize(df_lbeta_av, all_lbeta_av ~ group, paired=TRUE)
+  
+#BF calculation on the Wilcoxon
+BF_lbeta <- jmv::ttestPS(df_lbeta_matched, pairs = list(
+                    list(i1 = "lbeta_av_E_log", i2 = "lbeta_av_M_log")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #plot of individual differences
 pirateplot(formula = all_lbeta_av~group, #which variables are you using
@@ -1194,17 +1314,20 @@ axis(2, at = seq(-4.5, 0, by = 0.5)) #set the numbers on the y axis
 ```
 
 There are no statistically significant results in the data.  
-Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.  
+Bonferroni correction x8 as there are 4 frequency bands and 2 tests each.  
   
 **Median EasyCap =** `r lbeta_median_e`(`r lbeta_iqr_e`)  
   
 **Median Mobita =** `r lbeta_median_m`(`r lbeta_iqr_m`)  
 
-**Correlation:** τ = `r lbeta_cor$estimate`, p = `r lbeta_cor$p.value`, Bonferroni p = `r lbeta_cor$p.value*12`  
+**Wilcoxon:** V = `r lbeta_wil$statistic`, p = `r lbeta_wil$p.value`, Bonferroni p = `r lbeta_wil$p.value*8`, r = `r lbeta_es$effsize` (`r lbeta_es$magnitude`)   
   
-**Wilcoxon:** V = `r lbeta_wil$statistic`, p = `r lbeta_wil$p.value`, Bonferroni p = `r lbeta_wil$p.value*12`, r = `r lbeta_es$effsize` (`r lbeta_es$magnitude`)   
+**Fligner-Killeen:** X^2^ = `r lbeta_flig$statistic`, p = `r lbeta_flig$p.value`, Bonferroni p = `r lbeta_flig$p.value*8`
   
-**Fligner-Killeen:** X^2^ = `r lbeta_flig$statistic`, p = `r lbeta_flig$p.value`, Bonferroni p = `r lbeta_flig$p.value*12`
+**BF**
+```{r BF_lbeta}
+BF_lbeta$ttest
+```
   
 ******    
   
@@ -1270,8 +1393,8 @@ df_hbeta_matched$hbeta_av_M_log <- log(df_hbeta_matched$hbeta_av_M)
 - Pirate Plots 
 - Median (IQR) for EasyCap 
 - Median (IQR) for Mobita 
-- Kendall Correlation 
 - Wilcoxon Test 
+- Bayes Factor
 - Fligner-Killeen test  
   
 
@@ -1282,9 +1405,6 @@ hbeta_iqr_e <- IQR(df_hbeta_matched$hbeta_av_E_log)
 
 hbeta_median_m <- median(df_hbeta_matched$hbeta_av_M_log)
 hbeta_iqr_m <- IQR(df_hbeta_matched$hbeta_av_M_log)
-
-#Kendall Correlation
-hbeta_cor <- cor.test(df_hbeta_matched$hbeta_av_E_log, df_hbeta_matched$hbeta_av_M_log, method="kendall")
 
 #Scatter plot
 ggplot(df_hbeta_matched, aes(x=hbeta_av_E_log, y=hbeta_av_M_log))+ 
@@ -1309,6 +1429,14 @@ hbeta_flig <- fligner.test(all_hbeta_av ~ group, data = df_hbeta_av)
 
 #wilcoxon effect size using the new data structure
 hbeta_es <- wilcox_effsize(df_hbeta_av, all_hbeta_av ~ group, paired=TRUE)
+
+#Bayes factor calculation for Wilcoxon
+BF_hbeta <- jmv::ttestPS(df_hbeta_matched, pairs = list(
+                    list(i1 = "hbeta_av_E_log", i2 = "hbeta_av_M_log")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #Individual differences plot
 pirateplot(formula = all_hbeta_av~group, #which variables are you using
@@ -1343,18 +1471,20 @@ axis(2, at = seq(-5, -1.5, by = 0.5)) #set the numbers on the y axis
 ```
   
 There are no statistically significant results in the data.  
-Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.  
+Bonferroni correction x8 as there are 4 frequency bands and 2 tests each.  
   
 **Median EasyCap =** `r hbeta_median_e`(`r hbeta_iqr_e`)  
   
 **Median Mobita =** `r hbeta_median_m`(`r hbeta_iqr_m`)  
 
-**Correlation:** τ = `r hbeta_cor$estimate`, p = `r hbeta_cor$p.value`, Bonferroni p = `r hbeta_cor$p.value*12`  
+**Wilcoxon:** V = `r hbeta_wil$statistic`, p = `r hbeta_wil$p.value`, Bonferroni p = `r hbeta_wil$p.value*8`, r = `r hbeta_es$effsize` (`r hbeta_es$magnitude`)  
   
-**Wilcoxon:** V = `r hbeta_wil$statistic`, p = `r hbeta_wil$p.value`, Bonferroni p = `r hbeta_wil$p.value*12`, r = `r hbeta_es$effsize` (`r hbeta_es$magnitude`)  
+**Fligner-Killeen:** X^2^ = `r hbeta_flig$statistic`, p = `r hbeta_flig$p.value`, Bonferroni p = `r hbeta_flig$p.value*8`
   
-**Fligner-Killeen:** X^2^ = `r hbeta_flig$statistic`, p = `r hbeta_flig$p.value`, Bonferroni p = `r hbeta_flig$p.value*12`
-  
+**BF**
+```{r BF_hbeta}
+BF_hbeta$ttest
+```
 ******  
 
 
@@ -1374,8 +1504,8 @@ Bonferroni correction x12 as there are 4 frequency bands and 3 tests each.
 - Pirate Plot 
 - Median (IQR) for Easy Cap 
 - Median (IQR) for Mobita 
-- Correlation Test 
 - Wilcoxon test results 
+- Bayes Factor
 - Fligner-Killeen test  
   
   
@@ -1391,9 +1521,6 @@ P300_iqr_e <- IQR(df_P300$Pz_E)
 P300_median_m <- median(df_P300$Pz_M)
 P300_iqr_m <- IQR(df_P300$Pz_M)
 
-#Kendall's Tau Correlation
-P300_cor <- cor.test(df_P300$Pz_E, df_P300$Pz_M, method="kendall")
-
 #Correlation plot
 ggplot(df_P300, aes(x=Pz_E, y=Pz_M))+ 
   geom_point()+
@@ -1403,6 +1530,14 @@ ggplot(df_P300, aes(x=Pz_E, y=Pz_M))+
 
 #Wilcoxon test
 P300_wil <- wilcox.test(df_P300$Pz_E, df_P300$Pz_M, paired=TRUE)  
+
+#Bayes factor calculation for Wilcoxon
+BF_P300 <- jmv::ttestPS(df_P300, pairs = list(
+                    list(i1 = "Pz_E", i2 = "Pz_M")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #New data structure for further plots and tests
 P300 <- df_P300$Pz_E
@@ -1451,17 +1586,20 @@ axis(2, at = seq(-2, 7, by = 3)) #set the numbers on the y axis
 
 ```
 The results are non-significant. 
-Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
+Bonferroni correction x12 as there are 2 types of ERPs with 6 tests used for each     
 
 **Median EasyCap =** `r P300_median_e`(`r P300_iqr_e`)  
   
 **Median Mobita =** `r P300_median_m`(`r P300_iqr_m`)  
 
-**Correlation:** τ = `r P300_cor$estimate`, p = `r P300_cor$p.value`, Bonferroni p = `r P300_cor$p.value*14`  
+**Wilcoxon:** V = `r P300_wil$statistic`, p = `r P300_wil$p.value`, Bonferroni p = `r P300_wil$p.value*12`, r = `r P300_es$effsize` (`r P300_es$magnitude`)   
   
-**Wilcoxon:** V = `r P300_wil$statistic`, p = `r P300_wil$p.value`, Bonferroni p = `r P300_wil$p.value*14`, r = `r P300_es$effsize` (`r P300_es$magnitude`)   
+**Fligner-Killeen:** X^2^ = `r P300_flig$statistic`, p = `r P300_flig$p.value`, Bonferroni p = `r P300_flig$p.value*12`  
   
-**Fligner-Killeen:** X^2^ = `r P300_flig$statistic`, p = `r P300_flig$p.value`, Bonferroni p = `r P300_flig$p.value*14`
+**BF**
+```{r BF_P300}
+BF_P300$ttest
+```
   
 ******  
  
@@ -1490,7 +1628,15 @@ P300_lat_median_m <- median(df_P300_peak$Time_M)
 P300_lat_iqr_m <- IQR(df_P300_peak$Time_M)
 
 #Wilcoxon test
-P300_lat_wil <- wilcox.test(df_P300_peak$Time_E, df_P300_peak$Time_M, paired=TRUE)  
+P300_lat_wil <- wilcox.test(df_P300_peak$Time_E, df_P300_peak$Time_M, paired=TRUE) 
+
+#Bayes factor calculation for Wilcoxon
+BF_P300_lt <- jmv::ttestPS(df_P300_peak, pairs = list(
+                    list(i1 = "Time_E", i2 = "Time_M")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #Make a new data structure for further plotting and tests
 P300_peak <- df_P300_peak$Time_E
@@ -1540,15 +1686,20 @@ axis(2, at = seq(266, 379, by = 10)) #set the numbers on the y axis
 ```  
   
 The results are non-significant. 
-Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
+Bonferroni correction x12 as there are 2 types of ERPs with 6 tests used for each     
 
 **Median EasyCap =** `r P300_lat_median_e`(`r P300_lat_iqr_e`)  
   
 **Median Mobita =** `r P300_lat_median_m`(`r P300_lat_iqr_m`)  
 
-**Wilcoxon:** V = `r P300_lat_wil$statistic`, p = `r P300_lat_wil$p.value`, Bonferroni p = `r P300_lat_wil$p.value*14`, r = `r P300_lat_es$effsize` (`r P300_lat_es$magnitude`)  
+**Wilcoxon:** V = `r P300_lat_wil$statistic`, p = `r P300_lat_wil$p.value`, Bonferroni p = `r P300_lat_wil$p.value*12`, r = `r P300_lat_es$effsize` (`r P300_lat_es$magnitude`)  
   
-**Fligner-Killeen:** X^2^ = `r P300_lat_flig$statistic`, p = `r P300_lat_flig$p.value`, Bonferroni p = `r P300_lat_flig$p.value*14`
+**Fligner-Killeen:** X^2^ = `r P300_lat_flig$statistic`, p = `r P300_lat_flig$p.value`, Bonferroni p = `r P300_lat_flig$p.value*12`  
+  
+**BF**
+```{r BF_P300_lt}
+BF_P300_lt$ttest
+```
   
 ******  
   
@@ -1561,6 +1712,7 @@ Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for eac
 - Median (IQR) for Easy Cap 
 - Median (IQR) for Mobita 
 - Wilcoxon test results 
+- Bayes Factor
 - Fligner-Killeen test  
   
   
@@ -1577,7 +1729,15 @@ P300_amp_median_m <- median(df_P300_peak$Amp_M)
 P300_amp_iqr_m <- IQR(df_P300_peak$Amp_M)
   
 #Wilcoxon test
-P300_amp_wil <- wilcox.test(df_P300_peak$Amp_E, df_P300_peak$Amp_M, paired=TRUE)  
+P300_amp_wil <- wilcox.test(df_P300_peak$Amp_E, df_P300_peak$Amp_M, paired=TRUE) 
+
+#Bayes Factor calculation for Wilcoxon
+BF_P300_amp <- jmv::ttestPS(df_P300_peak, pairs = list(
+                    list(i1 = "Amp_E", i2 = "Amp_M")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #New data structure for further plotting and tests
 P300_peak_amp <- df_P300_peak$Amp_E
@@ -1632,9 +1792,14 @@ Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for eac
   
 **Median Mobita =** `r P300_amp_median_m`(`r P300_amp_iqr_m`)  
 
-**Wilcoxon:** V = `r P300_amp_wil$statistic`, p = `r P300_amp_wil$p.value`, Bonferroni p = `r P300_amp_wil$p.value*14`, r = `r P300_amp_es$effsize` (`r P300_amp_es$magnitude`)  
+**Wilcoxon:** V = `r P300_amp_wil$statistic`, p = `r P300_amp_wil$p.value`, Bonferroni p = `r P300_amp_wil$p.value*12`, r = `r P300_amp_es$effsize` (`r P300_amp_es$magnitude`)  
   
-**Fligner-Killeen:** X^2^ = `r P300_amp_flig$statistic`, p = `r P300_amp_flig$p.value`, Bonferroni p = `r P300_amp_flig$p.value*14`
+**Fligner-Killeen:** X^2^ = `r P300_amp_flig$statistic`, p = `r P300_amp_flig$p.value`, Bonferroni p = `r P300_amp_flig$p.value*12`  
+  
+**BF**
+```{r BF_P300_amp}
+BF_P300_amp$ttest
+```
   
 ******  
   
@@ -1651,8 +1816,8 @@ Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for eac
 - Pirate Plot 
 - Median (IQR) for Easy Cap 
 - Median (IQR) for Mobita 
-- Correlation Test 
 - Wilcoxon test results 
+- Bayes Factor
 - Fligner-Killeen test  
   
 
@@ -1676,9 +1841,6 @@ ERN_iqr_e <- IQR(df_ERN$dif_E)
 ERN_median_m <- median(df_ERN$dif_M)
 ERN_iqr_m <- IQR(df_ERN$dif_M)
 
-#Kendall Correlation
-ERN_cor <- cor.test(df_ERN$dif_E, df_ERN$dif_M, method="kendall")
-
 #Correlation plot
 ggplot(df_ERN, aes(x=dif_E, y=dif_M))+ 
   geom_point()+
@@ -1688,6 +1850,14 @@ ggplot(df_ERN, aes(x=dif_E, y=dif_M))+
 
 #Wilcoxon test
 ERN_wil <- wilcox.test(df_ERN$dif_E, df_ERN$dif_M, paired=TRUE)  
+
+#Bayes Factor calculation for Wilcoxon
+BF_ERN <- jmv::ttestPS(df_ERN, pairs = list(
+                    list(i1 = "dif_E", i2 = "dif_M")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #Create a new data structure for plotting and further tests
 ERN <- df_ERN$dif_E
@@ -1737,17 +1907,21 @@ axis(2, at = seq(-12, 6, by = 3)) #set the numbers on the y axis
 ```
 
 The results are non-significant. 
-Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
+Bonferroni correction x12 as there are 2 types of ERPs with 6 tests used for each     
 
 **Median EasyCap =** `r ERN_median_e`(`r ERN_iqr_e`)     
   
 **Median Mobita =** `r ERN_median_m`(`r ERN_iqr_m`)  
   
-**Correlation:** τ = `r ERN_cor$estimate`, p = `r ERN_cor$p.value`, Bonferroni p = `r ERN_cor$p.value*14` 
-
-**Wilcoxon:** V = `r ERN_wil$statistic`, p = `r ERN_wil$p.value`, Bonferroni p = `r ERN_wil$p.value*14`, r = `r ERN_es$effsize` (`r ERN_es$magnitude`)  
+**Wilcoxon:** V = `r ERN_wil$statistic`, p = `r ERN_wil$p.value`, Bonferroni p = `r ERN_wil$p.value*12`, r = `r ERN_es$effsize` (`r ERN_es$magnitude`)  
   
-**Fligner-Killeen:** X^2^ = `r ERN_flig$statistic`, p = `r ERN_flig$p.value`, Bonferroni p = `r ERN_flig$p.value*14`
+**Fligner-Killeen:** X^2^ = `r ERN_flig$statistic`, p = `r ERN_flig$p.value`, Bonferroni p = `r ERN_flig$p.value*12`  
+  
+**BF**
+```{r BF_ERN}
+BF_ERN$ttest
+```
+  
   
 ******  
   
@@ -1758,6 +1932,7 @@ Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for eac
 - Median (IQR) for Easy Cap 
 - Median (IQR) for Mobita 
 - Wilcoxon test results 
+- Bayes Factor
 - Fligner-Killeen test  
   
 
@@ -1776,6 +1951,14 @@ ERN_lat_iqr_m <- IQR(df_ERN_peak$Time_M)
 
 #Wilcoxon test
 ERN_lat_wil <- wilcox.test(df_ERN_peak$Time_E, df_ERN_peak$Time_M, paired=TRUE)  
+
+#Bayes Factor calculation for Wilcoxon
+BF_ERN_lt <- jmv::ttestPS(df_ERN_peak, pairs = list(
+                    list(i1 = "Time_E", i2 = "Time_M")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #Create a new data structure for plots and further tests
 ERN_peak <- df_ERN_peak$Time_E
@@ -1825,15 +2008,20 @@ axis(2, at = seq(-26, 71, by = 10)) #set the numbers on the y axis
 ```  
   
 The results are non-significant. 
-Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
+Bonferroni correction x12 as there are 2 types of ERPs with 6 tests used for each     
 
 **Median EasyCap =** `r ERN_lat_median_e`(`r ERN_lat_iqr_e`)  
   
 **Median Mobita =** `r ERN_lat_median_m`(`r ERN_lat_iqr_m`)  
 
-**Wilcoxon:** V = `r ERN_lat_wil$statistic`, p = `r ERN_lat_wil$p.value`, Bonferroni p = `r ERN_lat_wil$p.value*14`, r = `r ERN_lat_es$effsize` (`r ERN_lat_es$magnitude`)  
+**Wilcoxon:** V = `r ERN_lat_wil$statistic`, p = `r ERN_lat_wil$p.value`, Bonferroni p = `r ERN_lat_wil$p.value*12`, r = `r ERN_lat_es$effsize` (`r ERN_lat_es$magnitude`)  
   
-**Fligner-Killeen:** X^2^ = `r ERN_lat_flig$statistic`, p = `r ERN_lat_flig$p.value`, Bonferroni p = `r ERN_lat_flig$p.value*14`
+**Fligner-Killeen:** X^2^ = `r ERN_lat_flig$statistic`, p = `r ERN_lat_flig$p.value`, Bonferroni p = `r ERN_lat_flig$p.value*12`  
+  
+**BF**
+```{r BF_ERN_lt}
+BF_ERN_lt$ttest
+```
   
 ******  
 
@@ -1860,6 +2048,14 @@ ERN_amp_iqr_m <- IQR(df_ERN_peak$Amp_M)
 
 #Wilcoxon test
 ERN_amp_wil <- wilcox.test(df_ERN_peak$Amp_E, df_ERN_peak$Amp_M, paired=TRUE)  
+
+#Bayes Factor calculation for Wilcoxon
+BF_ERN_amp <- jmv::ttestPS(df_ERN_peak, pairs = list(
+                    list(i1 = "Amp_E", i2 = "Amp_M")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
 
 #New data structure for plotting and further tests
 ERN_peak_amp <- df_ERN_peak$Amp_E
@@ -1909,15 +2105,20 @@ axis(2, at = seq(-16, 3, by = 3)) #set the numbers on the y axis
 ```  
  
 The results are non-significant. 
-Bonferroni correction x14 as there are 2 types of ERPs with 7 tests used for each     
+Bonferroni correction x12 as there are 2 types of ERPs with 6 tests used for each     
 
 **Median EasyCap =** `r ERN_amp_median_e`(`r ERN_amp_iqr_e`)  
   
 **Median Mobita =** `r ERN_amp_median_m`(`r ERN_amp_iqr_m`)  
 
-**Wilcoxon:** V = `r ERN_amp_wil$statistic`, p = `r ERN_amp_wil$p.value`, Bonferroni p = `r ERN_amp_wil$p.value*14`, r = `r ERN_amp_es$effsize` (`r ERN_amp_es$magnitude`)  
+**Wilcoxon:** V = `r ERN_amp_wil$statistic`, p = `r ERN_amp_wil$p.value`, Bonferroni p = `r ERN_amp_wil$p.value*12`, r = `r ERN_amp_es$effsize` (`r ERN_amp_es$magnitude`)  
   
-**Fligner-Killeen:** X^2^ = `r ERN_amp_flig$statistic`, p = `r ERN_amp_flig$p.value`, Bonferroni p = `r ERN_amp_flig$p.value*14`
+**Fligner-Killeen:** X^2^ = `r ERN_amp_flig$statistic`, p = `r ERN_amp_flig$p.value`, Bonferroni p = `r ERN_amp_flig$p.value*12`  
+  
+**BF**
+```{r BF_ERN_amp}
+BF_ERN_amp$ttest
+```
   
 
 **ERN Plots**  
@@ -2042,6 +2243,33 @@ SNR_frontal_wil <- wilcox.test(SNR_frontal_e, SNR_frontal_m, paired=TRUE)
 SNR_central_wil <- wilcox.test(SNR_central_e, SNR_central_m, paired=TRUE) 
 SNR_posterior_wil <- wilcox.test(SNR_posterior_e, SNR_posterior_m, paired=TRUE)
 
+#Bayes Factor calculation for Wilcoxon
+df_snr_front <- as.data.frame(cbind(SNR_frontal_e, SNR_frontal_m))
+BF_snr_front <- jmv::ttestPS(df_snr_front, pairs = list(
+                    list(i1 = "SNR_frontal_e", i2 = "SNR_frontal_m")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
+
+#Bayes Factor calculation for Wilcoxon
+df_snr_cent <- as.data.frame(cbind(SNR_central_e, SNR_central_m))
+BF_snr_cent <- jmv::ttestPS(df_snr_cent, pairs = list(
+                    list(i1 = "SNR_central_e", i2 = "SNR_central_m")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
+
+#Bayes Factor calculation for Wilcoxon
+df_snr_post <- as.data.frame(cbind(SNR_posterior_e, SNR_posterior_m))
+BF_snr_post <- jmv::ttestPS(df_snr_post, pairs = list(
+                    list(i1 = "SNR_posterior_e", i2 = "SNR_posterior_m")),
+                    students = FALSE,
+                    bf = TRUE,
+                    bfPrior = 0.7,
+                    wilcoxon = TRUE)
+
 
 #Prepare data for the Fligner tests  
 df_SNR_frontal$group <- group
@@ -2068,19 +2296,64 @@ EasyCap Median(IQR): `r median(SNR_frontal_e)`(`r IQR(SNR_frontal_e)`)
 Mobita Median(IQR): `r median(SNR_frontal_m)`(`r IQR(SNR_frontal_m)`)  
 Wilcoxon: `r SNR_frontal_wil$statistic`, p-value = `r SNR_frontal_wil$p.value`, Bonferroni p-value: `r SNR_frontal_wil$p.value*10`, r = `r SNR_frontal_es$effsize` (`r SNR_frontal_es$magnitude`)  
 Fligner-Killeen: `r SNR_frontal_flig$statistic`, p-value = `r SNR_frontal_flig$p.value`, Bonferroni p-value: `r SNR_frontal_flig$p.value*10`  
+**BF**
+```{r BF_ERN_front}
+BF_snr_front$ttest
+```
   
 **Central electrodes**  
 EasyCap Median(IQR): `r median(SNR_central_e)`(`r IQR(SNR_central_e)`)  
 Mobita Median (IQR): `r median(SNR_central_m)`(`r IQR(SNR_central_m)`)  
 Wilcoxon: `r SNR_central_wil$statistic`, p-value = `r SNR_central_wil$p.value`, Bonferroni p-value: `r SNR_central_wil$p.value*10`, r = `r SNR_central_es$effsize` (`r SNR_central_es$magnitude`)  
 Fligner-Killeen: `r SNR_central_flig$statistic`, p-value = `r SNR_central_flig$p.value`, Bonferroni p-value: `r SNR_central_flig$p.value*10`  
+**BF**
+```{r BF_ERN_cent}
+BF_snr_cent$ttest
+```
 
 **Posterior electrodes**  
 EasyCap Median (IQR): `r median(SNR_posterior_e)`(`r IQR(SNR_posterior_e)`)  
 Mobita Median (IQR): `r median(SNR_posterior_m)`(`r IQR(SNR_posterior_m)`)  
 Wilcoxon: `r SNR_posterior_wil$statistic`, p-value = `r SNR_posterior_wil$p.value`, Bonferroni p-value: `r SNR_posterior_wil$p.value*10`, r = `r SNR_posterior_es$effsize` (`r SNR_posterior_es$magnitude`)  
 Fligner-Killeen: `r SNR_posterior_flig$statistic`, p-value = `r SNR_posterior_flig$p.value`, Bonferroni p-value: `r SNR_posterior_flig$p.value*10`  
+**BF**
+```{r BF_ERN_post}
+BF_snr_post$ttest
+```
+  
+****** 
   
   
+## **Number of trials rejected in artefact rejection**  
+```{r trials_N, eval=TRUE, echo=FALSE,  warning=FALSE, message=FALSE} 
+df_trials <- read.csv("pre_processing_data.csv")
+```
   
+**Response-locked epochs**   
+  
+```{r trials, eval=TRUE, echo=FALSE,  warning=FALSE, message=FALSE} 
+#response-locked trials are divided to correct and error responses. Sum the number of rejected trials and then use the overall number to report
+df_trials$E_rej_resp <- df_trials$E_Rej_CorrEp + df_trials$E_Rej_ErrEp
+df_trials$M_rej_resp <- df_trials$M_Rej_CorrEp + df_trials$M_Rej_ErrEp
+```
+  
+Median (IQR) EasyCap: `r median(df_trials$E_rej_resp)`(`r IQR(df_trials$E_rej_resp)`)
+Median (IQR) Mobita: `r median(df_trials$M_rej_resp)`(`r IQR(df_trials$M_rej_resp)`)  
+  
+```{r trials_resp, eval=TRUE, echo=FALSE,  warning=FALSE, message=FALSE} 
+Trial_resp <- wilcox.test(df_trials$E_rej_resp, df_trials$M_rej_resp, paired=TRUE)  
+```
+  
+Wilcoxon: `r Trial_resp$statistic`, p-value = `r Trial_resp$p.value`,  
+  
+**Stimulus-locked epochs**   
+  
+Median (IQR) EasyCap: `r median(df_trials$E_Rej_AllEp)`(`r IQR(df_trials$E_Rej_AllEp)`)
+Median (IQR) Mobita: `r median(df_trials$M_Rej_AllEp)`(`r IQR(df_trials$M_Rej_AllEp)`)
+  
+```{r trials_stim, eval=TRUE, echo=FALSE,  warning=FALSE, message=FALSE} 
+Trial_stim <- wilcox.test(df_trials$E_Rej_AllEp, df_trials$M_Rej_AllEp, paired=TRUE)  
+```
+  
+Wilcoxon: `r Trial_stim$statistic`, p-value = `r Trial_stim$p.value`, 
 
