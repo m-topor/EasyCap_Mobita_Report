@@ -2324,7 +2324,7 @@ BF_snr_post$ttest
 ****** 
   
   
-## **Number of trials rejected in artefact rejection**  
+## **Number of trials included in analyses**  
 ```{r trials_N, eval=TRUE, echo=FALSE,  warning=FALSE, message=FALSE} 
 df_trials <- read.csv("pre_processing_data.csv")
 ```
@@ -2337,23 +2337,11 @@ df_trials$E_rej_resp <- df_trials$E_Rej_CorrEp + df_trials$E_Rej_ErrEp
 df_trials$M_rej_resp <- df_trials$M_Rej_CorrEp + df_trials$M_Rej_ErrEp
 ```
   
-Median (IQR) EasyCap: `r median(df_trials$E_rej_resp)`(`r IQR(df_trials$E_rej_resp)`)
-Median (IQR) Mobita: `r median(df_trials$M_rej_resp)`(`r IQR(df_trials$M_rej_resp)`)  
-  
-```{r trials_resp, eval=TRUE, echo=FALSE,  warning=FALSE, message=FALSE} 
-Trial_resp <- wilcox.test(df_trials$E_rej_resp, df_trials$M_rej_resp, paired=TRUE)  
-```
-  
-Wilcoxon: `r Trial_resp$statistic`, p-value = `r Trial_resp$p.value`,  
+Mean (SD): `r mean(df_trials$Matched_ErrEp)`(`r sd(df_trials$Matched_ErrEp)`)
+
   
 **Stimulus-locked epochs**   
   
-Median (IQR) EasyCap: `r median(df_trials$E_Rej_AllEp)`(`r IQR(df_trials$E_Rej_AllEp)`)
-Median (IQR) Mobita: `r median(df_trials$M_Rej_AllEp)`(`r IQR(df_trials$M_Rej_AllEp)`)
-  
-```{r trials_stim, eval=TRUE, echo=FALSE,  warning=FALSE, message=FALSE} 
-Trial_stim <- wilcox.test(df_trials$E_Rej_AllEp, df_trials$M_Rej_AllEp, paired=TRUE)  
-```
-  
-Wilcoxon: `r Trial_stim$statistic`, p-value = `r Trial_stim$p.value`, 
+Mean (SD): `r mean(df_trials$Matched_AllEp)`(`r sd(df_trials$Matched_AllEp)`)
+
 
