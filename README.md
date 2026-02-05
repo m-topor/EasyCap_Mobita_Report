@@ -40,4 +40,22 @@ Figures that are included in the repository are those that were extracted from B
 - **fig2_range_freq.jpg** - pre-processed data data frequency spectrum with power values reflected in black for EasyCap and red for Mobita  
 - **freq_topographies.jpg** - topographies for all frequencies comparing activity observed with EasyCap and Mobita. First row is EasyCap and second row is Mobita.  
 - **P300.jpg** - Figure comparing the P300 waveform and topography between EasyCap and Mobita  
-- **P300_fz_pz.jpg** - Figure comparing the P300 waveform between EasyCap and Mobita at Fz and Pz channels 
+- **P300_fz_pz.jpg** - Figure comparing the P300 waveform between EasyCap and Mobita at Fz and Pz channels
+- 
+
+Realised that there is no clear mapping of the event markers to the type of trial. This is what I was able to recover from Eprime: 
+S200 - response 
+
+S201 – neutral-congruent 
+
+S202 – neutral - incongruent 
+
+S210 – congruent-neutral 
+
+S212 – congruent-incongruent 
+
+S220 – incongruent-neutral 
+
+S221 – incongruent-congruent 
+
+S222 – no change 
